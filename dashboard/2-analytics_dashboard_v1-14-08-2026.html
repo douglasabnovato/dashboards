@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteClass Analytics — Dashboard v1.0</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { 
+      background-color: #0b0f17; 
+      color: #e2e8f0; 
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+    }
+    .card-glass { 
+      background: rgba(30, 41, 59, 0.7); 
+      backdrop-filter: blur(12px); 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
+    }
+    .accent-glow { 
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); 
+    }
+    /* Estilização customizada dos sliders */
+    input[type=range] {
+      height: 6px;
+      -webkit-appearance: none;
+      background: #1e293b;
+      border-radius: 5px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #6366f1;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- CABEÇALHO & SELECTOR DE MODO -->
+    <header class="card-glass p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 accent-glow">
+      <div>
+        <div class="flex items-center gap-3 flex-wrap">
+          <h1 class="text-2xl font-bold text-white tracking-tight">ByteClass Analytics</h1>
+          <span class="bg-indigo-500/20 text-indigo-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-indigo-500/30">
+            v1.0 — Dados Auditados
+          </span>
+          <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-full font-medium border border-slate-700">
+            BU: Education (ByteClass)
+          </span>
+        </div>
+        <p class="text-slate-400 text-sm mt-1">Análise de Desempenho de Tráfego Pago & Simulador Estratégico (Conta: Byte Class 01)</p>
+      </div>
+
+      <!-- BOTÕES DE MODO -->
+      <div class="flex bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 self-stretch md:self-auto">
+        <button id="btn-mode-real" onclick="setMode('real')" class="flex-1 md:flex-none px-5 py-2 rounded-lg font-medium text-sm transition-all bg-indigo-600 text-white shadow-lg">
+          📊 Histórico Real (PDF)
+        </button>
+        <button id="btn-mode-sim" onclick="setMode('sim')" class="flex-1 md:flex-none px-5 py-2 rounded-lg font-medium text-sm transition-all text-slate-400 hover:text-white">
+          🧪 Simulador de Cenários
+        </button>
+      </div>
+    </header>
+
+    <!-- BANNER DE MODO SIMULAÇÃO -->
+    <div id="sim-banner" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-xl flex items-center justify-between text-sm flex-wrap gap-2">
+      <div class="flex items-center gap-2">
+        <span class="animate-pulse">⚠️</span>
+        <span><b>MODO SIMULAÇÃO ATIVO:</b> Os indicadores e gráficos estão a projetar resultados futuros com base nos parâmetros definidos abaixo.</span>
+      </div>
+      <button onclick="resetSimulation()" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 px-3 py-1.5 rounded-lg border border-amber-500/40 font-semibold transition-all">
+        Restaurar Padrão
+      </button>
+    </div>
+
+    <!-- FILTRO DE FASES HISTÓRICAS -->
+    <div id="phase-filters" class="flex flex-wrap gap-2">
+      <button onclick="filterPhase('all')" class="phase-btn bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 px-4 py-2 rounded-xl text-sm font-medium transition-all">Todas as Fases (10 meses)</button>
+      <button onclick="filterPhase(1)" class="phase-btn bg-slate-900/80 text-slate-400 border border-slate-800 px-4 py-2 rounded-xl text-sm font-medium hover:text-white transition-all">Fase 1: Aprendizagem (Out-Dez/25)</button>
+      <button onclick="filterPhase(2)" class="phase-btn bg-slate-900/80 text-slate-400 border border-slate-800 px-4 py-2 rounded-xl text-sm font-medium hover:text-white transition-all">Fase 2: Viragem de Chave (Jan-Abr/26)</button>
+      <button onclick="filterPhase(3)" class="phase-btn bg-slate-900/80 text-slate-400 border border-slate-800 px-4 py-2 rounded-xl text-sm font-medium hover:text-white transition-all">Fase 3: Manutenção (Mai-Jul/26)</button>
+    </div>
+
+    <!-- CARDS DE KPIS PRINCIPAIS -->
+    <section class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div class="card-glass p-5 rounded-2xl">
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Investimento Total</span>
+        <div id="kpi-invest" class="text-2xl font-extrabold text-white mt-1">R$ 9.335</div>
+        <span id="kpi-invest-sub" class="text-slate-400 text-xs mt-1 block">Média R$ 933/mês</span>
+      </div>
+
+      <div class="card-glass p-5 rounded-2xl">
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Conversas Whats</span>
+        <div id="kpi-leads" class="text-2xl font-extrabold text-emerald-400 mt-1">1.007</div>
+        <span id="kpi-leads-sub" class="text-slate-400 text-xs mt-1 block">100% Topo de Funil</span>
+      </div>
+
+      <div class="card-glass p-5 rounded-2xl">
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Custo / Conversa</span>
+        <div id="kpi-cpa" class="text-2xl font-extrabold text-indigo-400 mt-1">R$ 9,27</div>
+        <span id="kpi-cpa-sub" class="text-slate-400 text-xs mt-1 block">CPA Médio Geral</span>
+      </div>
+
+      <div class="card-glass p-5 rounded-2xl">
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">CPC Médio</span>
+        <div id="kpi-cpc" class="text-2xl font-extrabold text-sky-400 mt-1">R$ 0,94</div>
+        <span id="kpi-cpc-sub" class="text-slate-400 text-xs mt-1 block">9.936 cliques totais</span>
+      </div>
+
+      <div class="card-glass p-5 rounded-2xl col-span-2 md:col-span-1">
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">CTR Médio</span>
+        <div id="kpi-ctr" class="text-2xl font-extrabold text-purple-400 mt-1">1,34%</div>
+        <span id="kpi-ctr-sub" class="text-slate-400 text-xs mt-1 block">Pico de 1,8% no vídeo</span>
+      </div>
+    </section>
+
+    <!-- PAINEL DE CONTROLO DO SIMULADOR (SÓ APARECE NO MODO SIMULAÇÃO) -->
+    <section id="sim-controls" class="hidden card-glass p-6 rounded-2xl border-indigo-500/40 bg-indigo-950/20 space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🎚️ Parâmetros de Simulação do Funil Comercial</span>
+        </h2>
+        <span class="text-xs text-indigo-300">Ajuste os valores para projetar matrículas e faturação</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div>
+          <label class="text-xs text-slate-300 font-medium block mb-2">Orçamento Diário (R$)</label>
+          <input type="range" id="sim-budget-daily" min="10" max="200" step="5" value="30" oninput="updateSim()" class="w-full accent-indigo-500">
+          <div class="flex justify-between text-xs text-slate-400 mt-1">
+            <span>R$ 10/dia</span>
+            <span id="val-budget-daily" class="text-indigo-400 font-bold">R$ 30/dia</span>
+            <span>R$ 200/dia</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-300 font-medium block mb-2">CPA Esperado (R$/Conversa)</label>
+          <input type="range" id="sim-cpa" min="5" max="25" step="0.5" value="9.27" oninput="updateSim()" class="w-full accent-indigo-500">
+          <div class="flex justify-between text-xs text-slate-400 mt-1">
+            <span>R$ 5,00</span>
+            <span id="val-cpa" class="text-indigo-400 font-bold">R$ 9,27</span>
+            <span>R$ 25,00</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-300 font-medium block mb-2">Conversão Comercial (%)</label>
+          <input type="range" id="sim-conv" min="1" max="15" step="0.5" value="5" oninput="updateSim()" class="w-full accent-indigo-500">
+          <div class="flex justify-between text-xs text-slate-400 mt-1">
+            <span>1%</span>
+            <span id="val-conv" class="text-indigo-400 font-bold">5,0%</span>
+            <span>15%</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-300 font-medium block mb-2">Ticket Médio (R$)</label>
+          <input type="range" id="sim-ticket" min="200" max="3000" step="50" value="800" oninput="updateSim()" class="w-full accent-indigo-500">
+          <div class="flex justify-between text-xs text-slate-400 mt-1">
+            <span>R$ 200</span>
+            <span id="val-ticket" class="text-indigo-400 font-bold">R$ 800</span>
+            <span>R$ 3.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÉTRICAS RESULTANTES DA SIMULAÇÃO MENSAL -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-800">
+        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+          <span class="text-slate-400 text-xs font-medium">Matrículas Projetadas / Mês</span>
+          <div id="sim-vendas" class="text-xl font-bold text-emerald-400 mt-1">4.8 Alunos</div>
+        </div>
+        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+          <span class="text-slate-400 text-xs font-medium">Faturação Bruta Mensal</span>
+          <div id="sim-fat" class="text-xl font-bold text-white mt-1">R$ 3.883</div>
+        </div>
+        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+          <span class="text-slate-400 text-xs font-medium">Lucro Bruto S/ Anúncios</span>
+          <div id="sim-lucro" class="text-xl font-bold text-indigo-400 mt-1">R$ 2.983</div>
+        </div>
+        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+          <span class="text-slate-400 text-xs font-medium">ROAS Estimado</span>
+          <div id="sim-roas" class="text-xl font-bold text-purple-400 mt-1">4,31x</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÁREA DE GRÁFICOS -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card-glass p-6 rounded-2xl">
+        <h3 class="text-base font-bold text-white mb-4">Investimento Mensal (R$) vs Volume de Leads</h3>
+        <div class="h-64">
+          <canvas id="chartInvestLeads"></canvas>
+        </div>
+      </div>
+
+      <div class="card-glass p-6 rounded-2xl">
+        <h3 class="text-base font-bold text-white mb-4">Evolução de Eficiência: CPC vs Custo/Conversa</h3>
+        <div class="h-64">
+          <canvas id="chartEfic"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELA DADOS HISTÓRICOS FIEIS AO PDF -->
+    <section class="card-glass p-6 rounded-2xl overflow-x-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-bold text-white">Tabela Consolidada (Dados Históricos Originais)</h3>
+        <span class="text-xs text-slate-400">Fonte: Windsor.ai / Meta Ads</span>
+      </div>
+      <table class="w-full text-left text-sm text-slate-300">
+        <thead class="bg-slate-900/90 text-slate-400 uppercase text-xs">
+          <tr>
+            <th class="p-3 rounded-l-lg">Mês</th>
+            <th class="p-3">Gasto (R$)</th>
+            <th class="p-3">Cliques</th>
+            <th class="p-3">Conversas Whats</th>
+            <th class="p-3">CPC (R$)</th>
+            <th class="p-3 rounded-r-lg">Custo / Conversa</th>
+          </tr>
+        </thead>
+        <tbody id="table-body" class="divide-y divide-slate-800/60">
+          <!-- Injetado por JavaScript -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PAINEL EXPLICATIVO DO ESPECIALISTA (BASE DO DASHBOARD) -->
+    <footer class="card-glass p-6 rounded-2xl border-indigo-500/40 bg-indigo-950/30 accent-glow">
+      <div class="flex items-start gap-4">
+        <div class="bg-indigo-600/30 p-3 rounded-xl border border-indigo-500/50 text-2xl shrink-0">
+          💡
+        </div>
+        <div class="space-y-1.5">
+          <h4 class="text-base font-bold text-indigo-300">Análise Tática do Especialista em Tráfego</h4>
+          <p id="expert-note" class="text-sm text-slate-300 leading-relaxed">
+            Selecione uma fase ou ative o modo simulador para visualizar orientações dinâmicas sobre a gestão de tráfego pago da ByteClass.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // DADOS HISTÓRICOS ORIGINAIS DO PDF (OUT/2025 A JUL/2026)
+    const rawData = [
+      { mes: 'Out/25', gasto: 985, cliques: 619, conversas: 87, cpc: 1.59, cpa: 11.32, fase: 1 },
+      { mes: 'Nov/25', gasto: 1328, cliques: 934, conversas: 106, cpc: 1.42, cpa: 12.53, fase: 1 },
+      { mes: 'Dez/25', gasto: 1100, cliques: 836, conversas: 114, cpc: 1.32, cpa: 9.65, fase: 1 },
+      { mes: 'Jan/26', gasto: 1411, cliques: 2203, conversas: 193, cpc: 0.64, cpa: 7.31, fase: 2 },
+      { mes: 'Fev/26', gasto: 1141, cliques: 1629, conversas: 139, cpc: 0.70, cpa: 8.21, fase: 2 },
+      { mes: 'Mar/26', gasto: 948, cliques: 1208, conversas: 113, cpc: 0.78, cpa: 8.38, fase: 2 },
+      { mes: 'Abr/26', gasto: 667, cliques: 1036, conversas: 73, cpc: 0.64, cpa: 9.13, fase: 2 },
+      { mes: 'Mai/26', gasto: 610, cliques: 521, conversas: 66, cpc: 1.17, cpa: 9.24, fase: 3 },
+      { mes: 'Jun/26', gasto: 612, cliques: 466, conversas: 64, cpc: 1.31, cpa: 9.57, fase: 3 },
+      { mes: 'Jul/26', gasto: 534, cliques: 484, conversas: 52, cpc: 1.10, cpa: 10.27, fase: 3 }
+    ];
+
+    let currentMode = 'real';
+    let currentPhase = 'all';
+    let chart1, chart2;
+
+    window.onload = () => {
+      renderTable(rawData);
+      initCharts();
+      updateExpertNoteReal('all');
+    };
+
+    function renderTable(data) {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+      data.forEach(row => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="p-3 font-semibold text-white">${row.mes}</td>
+            <td class="p-3">R$ ${row.gasto.toLocaleString('pt-BR')}</td>
+            <td class="p-3">${row.cliques.toLocaleString('pt-BR')}</td>
+            <td class="p-3 text-emerald-400 font-bold">${row.conversas}</td>
+            <td class="p-3">R$ ${row.cpc.toFixed(2)}</td>
+            <td class="p-3 text-indigo-400 font-medium">R$ ${row.cpa.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function initCharts() {
+      const ctx1 = document.getElementById('chartInvestLeads').getContext('2d');
+      chart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: rawData.map(d => d.mes),
+          datasets: [
+            { label: 'Gasto (R$)', data: rawData.map(d => d.gasto), backgroundColor: '#4f46e5', borderRadius: 6, order: 2 },
+            { label: 'Conversas Whats', data: rawData.map(d => d.conversas), type: 'line', borderColor: '#34d399', borderWidth: 3, tension: 0.3, yAxisID: 'y1', order: 1 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+            y1: { position: 'right', ticks: { color: '#34d399' }, grid: { drawOnChartArea: false } },
+            x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+          },
+          plugins: { legend: { labels: { color: '#f8fafc' } } }
+        }
+      });
+
+      const ctx2 = document.getElementById('chartEfic').getContext('2d');
+      chart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: rawData.map(d => d.mes),
+          datasets: [
+            { label: 'CPC (R$)', data: rawData.map(d => d.cpc), borderColor: '#38bdf8', borderWidth: 2, tension: 0.3 },
+            { label: 'Custo/Conversa (R$)', data: rawData.map(d => d.cpa), borderColor: '#818cf8', borderWidth: 2, tension: 0.3 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+            x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+          },
+          plugins: { legend: { labels: { color: '#f8fafc' } } }
+        }
+      });
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const btnReal = document.getElementById('btn-mode-real');
+      const btnSim = document.getElementById('btn-mode-sim');
+      const simBanner = document.getElementById('sim-banner');
+      const simControls = document.getElementById('sim-controls');
+      const phaseFilters = document.getElementById('phase-filters');
+
+      if (mode === 'sim') {
+        btnSim.className = "flex-1 md:flex-none px-5 py-2 rounded-lg font-medium text-sm transition-all bg-indigo-600 text-white shadow-lg";
+        btnReal.className = "flex-1 md:flex-none px-5 py-2 rounded-lg font-medium text-sm transition-all text-slate-400 hover:text-white";
+        simBanner.classList.remove('hidden');
+        simControls.classList.remove('hidden');
+        phaseFilters.classList.add('hidden');
+        updateSim();
+      } else {
+        btnReal.className = "flex-1 md:flex-none px-5 py-2 rounded-lg font-medium text-sm transition-all bg-indigo-600 text-white shadow-lg";
+        btnSim.className = "flex-1 md:flex-none px-5 py-2 rounded-lg font-medium text-sm transition-all text-slate-400 hover:text-white";
+        simBanner.classList.add('hidden');
+        simControls.classList.add('hidden');
+        phaseFilters.classList.remove('hidden');
+        filterPhase('all');
+      }
+    }
+
+    function filterPhase(phase) {
+      currentPhase = phase;
+      
+      // Atualizar estilos dos botões de filtro
+      document.querySelectorAll('.phase-btn').forEach((btn, idx) => {
+        const isSelected = (phase === 'all' && idx === 0) || (phase === idx);
+        btn.className = isSelected 
+          ? "phase-btn bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 px-4 py-2 rounded-xl text-sm font-medium transition-all"
+          : "phase-btn bg-slate-900/80 text-slate-400 border border-slate-800 px-4 py-2 rounded-xl text-sm font-medium hover:text-white transition-all";
+      });
+
+      let filtered = rawData;
+      if (phase !== 'all') {
+        filtered = rawData.filter(d => d.fase === phase);
+      }
+
+      renderTable(filtered);
+
+      const totInvest = filtered.reduce((acc, d) => acc + d.gasto, 0);
+      const totLeads = filtered.reduce((acc, d) => acc + d.conversas, 0);
+      const avgCpa = totLeads > 0 ? (totInvest / totLeads) : 0;
+      const avgCpc = filtered.reduce((acc, d) => acc + d.cpc, 0) / filtered.length;
+
+      document.getElementById('kpi-invest').innerText = `R$ ${totInvest.toLocaleString('pt-BR')}`;
+      document.getElementById('kpi-leads').innerText = totLeads.toLocaleString('pt-BR');
+      document.getElementById('kpi-cpa').innerText = `R$ ${avgCpa.toFixed(2)}`;
+      document.getElementById('kpi-cpc').innerText = `R$ ${avgCpc.toFixed(2)}`;
+
+      chart1.data.labels = filtered.map(d => d.mes);
+      chart1.data.datasets[0].data = filtered.map(d => d.gasto);
+      chart1.data.datasets[1].data = filtered.map(d => d.conversas);
+      chart1.update();
+
+      chart2.data.labels = filtered.map(d => d.mes);
+      chart2.data.datasets[0].data = filtered.map(d => d.cpc);
+      chart2.data.datasets[1].data = filtered.map(d => d.cpa);
+      chart2.update();
+
+      updateExpertNoteReal(phase);
+    }
+
+    function updateSim() {
+      const budgetDaily = parseFloat(document.getElementById('sim-budget-daily').value);
+      const cpa = parseFloat(document.getElementById('sim-cpa').value);
+      const conv = parseFloat(document.getElementById('sim-conv').value) / 100;
+      const ticket = parseFloat(document.getElementById('sim-ticket').value);
+
+      document.getElementById('val-budget-daily').innerText = `R$ ${budgetDaily}/dia`;
+      document.getElementById('val-cpa').innerText = `R$ ${cpa.toFixed(2)}`;
+      document.getElementById('val-conv').innerText = `${(conv * 100).toFixed(1)}%`;
+      document.getElementById('val-ticket').innerText = `R$ ${ticket.toLocaleString('pt-BR')}`;
+
+      const investMensal = budgetDaily * 30;
+      const leadsMensais = Math.floor(investMensal / cpa);
+      const vendasMensais = (leadsMensais * conv);
+      const fatMensal = vendasMensais * ticket;
+      const lucroMensal = fatMensal - investMensal;
+      const roas = investMensal > 0 ? (fatMensal / investMensal) : 0;
+
+      document.getElementById('kpi-invest').innerText = `R$ ${investMensal.toLocaleString('pt-BR')}`;
+      document.getElementById('kpi-leads').innerText = leadsMensais;
+      document.getElementById('kpi-cpa').innerText = `R$ ${cpa.toFixed(2)}`;
+      document.getElementById('kpi-cpc').innerText = `R$ 0,85*`;
+
+      document.getElementById('sim-vendas').innerText = `${vendasMensais.toFixed(1)} Alunos`;
+      document.getElementById('sim-fat').innerText = `R$ ${Math.round(fatMensal).toLocaleString('pt-BR')}`;
+      document.getElementById('sim-lucro').innerText = `R$ ${Math.round(lucroMensal).toLocaleString('pt-BR')}`;
+      document.getElementById('sim-roas').innerText = `${roas.toFixed(2)}x`;
+
+      updateExpertNoteSim(budgetDaily, cpa, conv, roas);
+    }
+
+    function resetSimulation() {
+      document.getElementById('sim-budget-daily').value = 30;
+      document.getElementById('sim-cpa').value = 9.27;
+      document.getElementById('sim-conv').value = 5;
+      document.getElementById('sim-ticket').value = 800;
+      updateSim();
+    }
+
+    function updateExpertNoteReal(phase) {
+      const note = document.getElementById('expert-note');
+      if (phase === 1) {
+        note.innerHTML = "<b>Análise da Fase 1 (Aprendizagem):</b> O CPC inicial foi elevado (R$ 1,30 a R$ 1,59) devido ao formato estático direcionado para vendas imediatas. O algoritmo ainda estava a mapear o público-alvo em Juiz de Fora (raio de 20km).";
+      } else if (phase === 2) {
+        note.innerHTML = "<b>Análise da Fase 2 (Viragem de Chave):</b> A entrada do anúncio em vídeo com nova copy provocou uma queda de 60% no CPC (R$ 0,64 em Jan/26). O custo por conversa no WhatsApp atingiu o mínimo histórico de R$ 7,31. Esta é a estrutura recomendada para retomar tração no próximo ciclo.";
+      } else if (phase === 3) {
+        note.innerHTML = "<b>Análise da Fase 3 (Manutenção):</b> A redução do orçamento para R$ 20/dia enfraqueceu a entrega no leilão e elevou o CPC para R$ 1,10 - R$ 1,31. Orçamentos diários reduzidos provocam maior frequência e saturação no leilão local.";
+      } else {
+        note.innerHTML = "<b>Análise Geral do Histórico ByteClass:</b> O tráfego pago gerou 1.007 oportunidades no WhatsApp a um custo médio de R$ 9,27/lead. O anúncio em vídeo provou ser o campeão da conta. O próximo passo prioritário é estruturar o acompanhamento comercial (pós-WhatsApp) para calcular o CAC exato por aluno matriculado.";
+      }
+    }
+
+    function updateExpertNoteSim(budget, cpa, conv, roas) {
+      const note = document.getElementById('expert-note');
+      if (budget <= 20) {
+        note.innerHTML = `⚠️ <b>Alerta de Orçamento Reduzido (R$ ${budget}/dia):</b> Tal como observado na Fase 3 do histórico real, orçamentos na faixa dos R$ 20/dia encarecem o custo por conversa (+24%). É recomendável manter entre R$ 40 e R$ 50/dia para otimização no leilão da Meta.`;
+      } else if (roas < 2) {
+        note.innerHTML = `⚠️ <b>Atenção à Margem (ROAS ${roas.toFixed(2)}x):</b> O retorno está próximo do ponto de equilíbrio. Aumentar a taxa de conversão do comercial no WhatsApp ou ajustar o Ticket Médio das formações vai alavancar a rentabilidade sem aumentar os custos com anúncios.`;
+      } else {
+        note.innerHTML = `🚀 <b>Projeção Favorável (ROAS ${roas.toFixed(2)}x):</b> Por cada R$ 1,00 aplicado em Meta Ads, a ByteClass projeta gerar R$ ${roas.toFixed(2)} em novas matrículas. O segredo estratégico é produzir novas variações do vídeo campeão para sustentar o CPA na faixa dos R$ ${cpa.toFixed(2)}.`;
+      }
+    }
+  </script>
+</body>
+</html>

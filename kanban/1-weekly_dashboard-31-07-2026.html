@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>learnTECH OS - Tactical Kanban Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .color-medtrem {
+            color: #10b981;
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .color-byteclass {
+            color: #0ea5e9;
+            border-color: #0ea5e9;
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        .color-volta {
+            color: #f59e0b;
+            border-color: #f59e0b;
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+
+        .color-ecossistema {
+            color: #8b5cf6;
+            border-color: #8b5cf6;
+            background-color: rgba(139, 92, 246, 0.1);
+        }
+
+        .kanban-col {
+            min-height: 200px;
+            transition: background-color 0.2s ease;
+        }
+
+        .kanban-col.drag-over {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .task-card {
+            cursor: grab;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .task-card:active {
+            cursor: grabbing;
+        }
+
+        .task-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .wip-breach-anim {
+            animation: pulse-red 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-red {
+
+            0%,
+            100% {
+                border-color: rgba(239, 68, 68, 0.3);
+                background-color: rgba(239, 68, 68, 0.05);
+            }
+
+            50% {
+                border-color: rgba(239, 68, 68, 0.8);
+                background-color: rgba(239, 68, 68, 0.15);
+            }
+        }
+
+        .day-badge {
+            font-size: 8px;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-slate-950 text-slate-200 min-h-screen font-sans flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white leading-tight">learnTECH OS</h1>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest">Tactical Portfolio Manager</p>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest">27-07-2026 à 31-07-2026</p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-center">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] text-slate-400 uppercase">WIP Limit Global</span>
+                    <div class="flex items-center gap-2">
+                        <span id="wip-counter" class="text-sm font-bold text-emerald-400">0</span>
+                        <span class="text-xs text-slate-500">/ 1 Ativa</span>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-slate-700"></div>
+                <button onclick="resetBoard()"
+                    class="text-xs text-slate-400 hover:text-red-400 transition-colors bg-slate-800 px-3 py-1.5 rounded border border-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-6 w-full flex flex-col gap-4 h-[calc(100vh-70px)]">
+
+        <!-- Filters row 1: Projeto -->
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between shrink-0">
+            <div class="flex gap-2 overflow-x-auto custom-scroll w-full pb-1" id="filter-container">
+                <button onclick="setFilter('all')"
+                    class="filter-btn active px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800 text-xs font-semibold text-white transition-colors whitespace-nowrap"
+                    data-target="all">All Projects</button>
+                <button onclick="setFilter('medtrem')"
+                    class="filter-btn px-3 py-1.5 rounded-full border border-emerald-900/50 bg-emerald-950/20 text-emerald-400 text-xs hover:bg-emerald-900/40 transition-colors whitespace-nowrap"
+                    data-target="medtrem"><i class="fa-solid fa-briefcase-medical mr-1"></i> A - MedTrem</button>
+                <button onclick="setFilter('byteclass')"
+                    class="filter-btn px-3 py-1.5 rounded-full border border-sky-900/50 bg-sky-950/20 text-sky-400 text-xs hover:bg-sky-900/40 transition-colors whitespace-nowrap"
+                    data-target="byteclass"><i class="fa-solid fa-chalkboard-user mr-1"></i> B - ByteClass</button>
+                <button onclick="setFilter('volta')"
+                    class="filter-btn px-3 py-1.5 rounded-full border border-amber-900/50 bg-amber-950/20 text-amber-400 text-xs hover:bg-amber-900/40 transition-colors whitespace-nowrap"
+                    data-target="volta"><i class="fa-solid fa-truck-fast mr-1"></i> C - Volta Express</button>
+                <button onclick="setFilter('ecossistema')"
+                    class="filter-btn px-3 py-1.5 rounded-full border border-purple-900/50 bg-purple-950/20 text-purple-400 text-xs hover:bg-purple-900/40 transition-colors whitespace-nowrap"
+                    data-target="ecossistema"><i class="fa-solid fa-globe mr-1"></i> D - Ecossistema</button>
+            </div>
+        </div>
+
+        <!-- Filters row 2: Dia da semana -->
+        <div class="flex gap-2 overflow-x-auto custom-scroll w-full pb-1 shrink-0" id="day-filter-container">
+            <span class="text-[10px] text-slate-500 uppercase self-center pr-1 whitespace-nowrap"><i
+                    class="fa-regular fa-calendar mr-1"></i>Dia:</span>
+            <button onclick="setDayFilter('all')"
+                class="day-filter-btn active px-3 py-1 rounded-full border border-slate-700 bg-slate-800 text-[11px] font-semibold text-white whitespace-nowrap"
+                data-target="all">Todos</button>
+            <button onclick="setDayFilter('seg')"
+                class="day-filter-btn px-3 py-1 rounded-full border border-slate-700 bg-slate-900 text-[11px] text-slate-300 hover:bg-slate-800 whitespace-nowrap"
+                data-target="seg">Segunda</button>
+            <button onclick="setDayFilter('ter')"
+                class="day-filter-btn px-3 py-1 rounded-full border border-slate-700 bg-slate-900 text-[11px] text-slate-300 hover:bg-slate-800 whitespace-nowrap"
+                data-target="ter">Terça</button>
+            <button onclick="setDayFilter('qua')"
+                class="day-filter-btn px-3 py-1 rounded-full border border-slate-700 bg-slate-900 text-[11px] text-slate-300 hover:bg-slate-800 whitespace-nowrap"
+                data-target="qua">Quarta</button>
+            <button onclick="setDayFilter('qui')"
+                class="day-filter-btn px-3 py-1 rounded-full border border-slate-700 bg-slate-900 text-[11px] text-slate-300 hover:bg-slate-800 whitespace-nowrap"
+                data-target="qui">Quinta</button>
+            <button onclick="setDayFilter('sex')"
+                class="day-filter-btn px-3 py-1 rounded-full border border-slate-700 bg-slate-900 text-[11px] text-slate-300 hover:bg-slate-800 whitespace-nowrap"
+                data-target="sex">Sexta</button>
+            <button onclick="setDayFilter('sem-dia')"
+                class="day-filter-btn px-3 py-1 rounded-full border border-slate-700 bg-slate-900 text-[11px] text-slate-300 hover:bg-slate-800 whitespace-nowrap"
+                data-target="sem-dia">Sem dia definido</button>
+        </div>
+
+        <!-- Kanban Board Area -->
+        <div class="flex gap-4 overflow-x-auto overflow-y-hidden custom-scroll flex-grow pb-4 items-start"
+            id="kanban-board">
+
+            <div class="flex-shrink-0 w-72 bg-slate-900/50 border border-slate-800 rounded-xl flex flex-col max-h-full">
+                <div
+                    class="p-3 border-b border-slate-800/50 flex justify-between items-center bg-slate-900/80 rounded-t-xl shrink-0">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"><i
+                            class="fa-solid fa-inbox"></i> Backlog Geral</h3>
+                    <span
+                        class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
+                </div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="0"></div>
+            </div>
+
+            <div class="flex-shrink-0 w-72 bg-slate-900/50 border border-slate-800 rounded-xl flex flex-col max-h-full">
+                <div
+                    class="p-3 border-b border-slate-800/50 flex justify-between items-center bg-slate-900/80 rounded-t-xl shrink-0">
+                    <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-2"><i
+                            class="fa-solid fa-list-ul"></i> To-Do (Semana)</h3>
+                    <span
+                        class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
+                </div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="1"></div>
+            </div>
+
+            <div class="flex-shrink-0 w-72 bg-slate-900/80 border-2 border-indigo-900/30 rounded-xl flex flex-col max-h-full shadow-lg relative"
+                id="wip-column">
+                <div
+                    class="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest shadow-md whitespace-nowrap z-10">
+                    Foco Atual (Limit: 1)</div>
+                <div
+                    class="p-3 border-b border-slate-800/50 flex justify-between items-center bg-indigo-950/20 rounded-t-xl shrink-0 pt-4">
+                    <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2"><i
+                            class="fa-solid fa-spinner fa-spin-pulse"></i> Doing</h3>
+                    <span
+                        class="text-[10px] bg-indigo-900/50 text-indigo-200 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
+                </div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2 min-h-[150px]"
+                    data-stage="2"></div>
+            </div>
+
+            <div class="flex-shrink-0 w-72 bg-slate-900/50 border border-slate-800 rounded-xl flex flex-col max-h-full">
+                <div
+                    class="p-3 border-b border-slate-800/50 flex justify-between items-center bg-slate-900/80 rounded-t-xl shrink-0">
+                    <h3 class="text-xs font-bold text-amber-500 uppercase tracking-wider flex items-center gap-2"><i
+                            class="fa-solid fa-vial-circle-check"></i> QA / Testes</h3>
+                    <span
+                        class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
+                </div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="3"></div>
+            </div>
+
+            <div
+                class="flex-shrink-0 w-72 bg-slate-900/30 border border-slate-800/50 rounded-xl flex flex-col max-h-full opacity-70 hover:opacity-100 transition-opacity">
+                <div
+                    class="p-3 border-b border-slate-800/30 flex justify-between items-center bg-slate-900/50 rounded-t-xl shrink-0">
+                    <h3 class="text-xs font-bold text-emerald-500 uppercase tracking-wider flex items-center gap-2"><i
+                            class="fa-solid fa-check-double"></i> Concluído</h3>
+                    <span
+                        class="text-[10px] bg-emerald-900/30 text-emerald-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
+                </div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="4"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Estrutura de dados granular, conforme a divisão setorial completa (A/B/C/D)
+        const initialTasks = [
+            // A - MedTrem
+            { id: 'a1a', title: 'A.1.a - Mapeamento', desc: 'Reunião de finanças com fio solto — retomar e definir próxima ação.', project: 'medtrem', stage: 1, day: 'seg' },
+            { id: 'a2a', title: 'A.2.a - ERP', desc: 'Integração de dados e parametrização do sistema base.', project: 'medtrem', stage: 0, day: null },
+            { id: 'a2b', title: 'A.2.b - Financeiro', desc: 'Processos de recebimento.', project: 'medtrem', stage: 0, day: null },
+            { id: 'a3', title: 'A.3 - Des. de Tecnologia', desc: 'Frente técnica geral do MedTrem.', project: 'medtrem', stage: 0, day: null },
+
+            // B - ByteClass — 1. Gestão
+            { id: 'b1a', title: 'B.1.a - Gestão', desc: 'Tarefa e prazo.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b1b', title: 'B.1.b - Pedagógico', desc: 'Conteúdo, instrutor, nível de aluno.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b1c', title: 'B.1.c - Comercial', desc: 'Converter lead em matrícula.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b1d', title: 'B.1.d - Marketing', desc: 'Criar conteúdo em redes digitais.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b1e', title: 'B.1.e - CS', desc: 'Tornar o aluno um cliente feliz.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b1f', title: 'B.1.f - Financeiro', desc: 'Pix e link de pagamento.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b1g', title: 'B.1.g - Jurídico', desc: 'Contrato e datas de matrícula ativada.', project: 'byteclass', stage: 0, day: null },
+
+            // B - ByteClass — 2. Conteúdos
+            { id: 'b2a', title: 'B.2.a - Conteúdos', desc: 'Ementa e escrever roteiros.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b2b', title: 'B.2.b - Engajamento', desc: 'Acompanhamento do aluno.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b2c', title: 'B.2.c - Aula Presencial', desc: 'Concentrar alunos em uma turma.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b2d', title: 'B.2.d - Aula Gravada', desc: 'Subir vídeos com prazo.', project: 'byteclass', stage: 0, day: null },
+            { id: 'b2e', title: 'B.2.e - Live', desc: 'Aulas ao vivo online, Discord.', project: 'byteclass', stage: 0, day: null },
+
+            // B - ByteClass — 3. Desenvolvimento
+            { id: 'b3a', title: 'B.3.a - Des. Plataforma', desc: 'PRs, QA, backlogs — #133/#134/#135 fechados, #136 em revisão final.', project: 'byteclass', stage: 2, day: 'seg' },
+
+            // C - Volta Express — 1. Diretoria
+            { id: 'c1a', title: 'C.1.a - Estratégia', desc: 'Business plan.', project: 'volta', stage: 0, day: null },
+            { id: 'c1b', title: 'C.1.b - Incubação', desc: 'Projeto, documentação, pitch, edital.', project: 'volta', stage: 0, day: null },
+
+            // C - Volta Express — 2. Projeto
+            { id: 'c2a', title: 'C.2.a - Desenvolvimento LP', desc: 'Landing page.', project: 'volta', stage: 0, day: null },
+            { id: 'c2b', title: 'C.2.b - Desenvolvimento Plataforma', desc: '.', project: 'volta', stage: 0, day: null },
+
+            // C - Volta Express — 3. Negócios
+            { id: 'c3a', title: 'C.3.a - Marketing', desc: 'Conteúdo, audiência, cadastro, anúncio.', project: 'volta', stage: 0, day: null },
+            { id: 'c3b', title: 'C.3.b - Viagens Realizadas', desc: 'Levantamento de tração.', project: 'volta', stage: 0, day: null },
+            { id: 'c3c', title: 'C.3.c - Prioridades', desc: '.', project: 'volta', stage: 0, day: null },
+
+            // D - Ecossistema — 1. Portfólio-Gestão
+            { id: 'd1a', title: 'D.1.a - GitHub: Gestão de Projetos', desc: '.', project: 'ecossistema', stage: 0, day: null },
+            { id: 'd1b', title: 'D.1.b - learnTECH Plataforma', desc: '.', project: 'ecossistema', stage: 0, day: null },
+            { id: 'd1c', title: 'D.1.c - learnTECH Conteúdo', desc: 'Roadmap: HD, YouTube, Notion, imagens.', project: 'ecossistema', stage: 0, day: null },
+
+            // D - Ecossistema — 2. Eventos-Agenda
+            { id: 'd2a', title: 'D.2.a - BQ Agenda Tech', desc: 'Issue especificada, pronta para decisão final.', project: 'ecossistema', stage: 1, day: 'ter' },
+            { id: 'd2b', title: 'D.2.b - Histórico Registrados', desc: '.', project: 'ecossistema', stage: 0, day: null },
+            { id: 'd2c', title: 'D.2.c - Famosos do Futuro', desc: 'Curadoria de eventos futuros já iniciada.', project: 'ecossistema', stage: 1, day: null },
+
+            // D - Ecossistema — 3. Oportunidades-TECH
+            { id: 'd3a', title: 'D.3.a - Processo Seletivo', desc: 'Inscrever, avançar em etapas, aprovar.', project: 'ecossistema', stage: 3, day: null },
+
+            // D - Ecossistema — 4. Certificados
+            { id: 'd4a', title: 'D.4.a - Pós Engenharia de Software', desc: '.', project: 'ecossistema', stage: 0, day: null },
+            { id: 'd4b', title: 'D.4.b - Certificação PMO', desc: '.', project: 'ecossistema', stage: 0, day: null },
+            { id: 'd4c', title: 'D.4.c - IA na Programação', desc: '.', project: 'ecossistema', stage: 0, day: null },
+
+            // D - Ecossistema — 5. Inglês
+            { id: 'd5a', title: 'D.5.a - Idioma para Conversação', desc: '.', project: 'ecossistema', stage: 0, day: null },
+
+            // D - Ecossistema — 6. Writer
+            { id: 'd6a', title: 'D.6.a - Artigos dos Chats IA', desc: 'Matéria-prima já existe, falta transformar em rascunho.', project: 'ecossistema', stage: 1, day: 'sex' },
+
+            // D - Ecossistema — 7. Projetos
+            { id: 'd7a', title: 'D.7.a - Projeto facilAdmin', desc: '.', project: 'ecossistema', stage: 0, day: null }
+        ];
+
+        const projectMeta = {
+            medtrem: { icon: 'fa-briefcase-medical', name: 'MedTrem' },
+            byteclass: { icon: 'fa-chalkboard-user', name: 'ByteClass' },
+            volta: { icon: 'fa-truck-fast', name: 'Volta Express' },
+            ecossistema: { icon: 'fa-globe', name: 'Ecossistema' }
+        };
+
+        const dayLabels = { seg: 'SEG', ter: 'TER', qua: 'QUA', qui: 'QUI', sex: 'SEX' };
+
+        let tasks = [];
+        let currentFilter = 'all';
+        let currentDayFilter = 'all';
+        const WIP_LIMIT = 1;
+
+        function init() {
+            const saved = localStorage.getItem('learntech_kanban_v3');
+            if (saved) {
+                try { tasks = JSON.parse(saved); }
+                catch (e) { tasks = JSON.parse(JSON.stringify(initialTasks)); }
+            } else {
+                tasks = JSON.parse(JSON.stringify(initialTasks));
+            }
+            renderBoard();
+            setupDragAndDrop();
+        }
+
+        function save() { localStorage.setItem('learntech_kanban_v3', JSON.stringify(tasks)); }
+
+        function resetBoard() {
+            if (confirm("Deseja resetar o quadro para o estado inicial?")) {
+                tasks = JSON.parse(JSON.stringify(initialTasks));
+                save();
+                renderBoard();
+            }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.style.opacity = (btn.dataset.target === filter) ? '1' : '0.5';
+            });
+            renderBoard();
+        }
+
+        function setDayFilter(day) {
+            currentDayFilter = day;
+            document.querySelectorAll('.day-filter-btn').forEach(btn => {
+                btn.style.opacity = (btn.dataset.target === day) ? '1' : '0.5';
+            });
+            renderBoard();
+        }
+
+        function taskPassesFilters(task) {
+            if (currentFilter !== 'all' && task.project !== currentFilter) return false;
+            if (currentDayFilter === 'sem-dia' && task.day) return false;
+            if (currentDayFilter !== 'all' && currentDayFilter !== 'sem-dia' && task.day !== currentDayFilter) return false;
+            return true;
+        }
+
+        function renderBoard() {
+            document.querySelectorAll('.kanban-col').forEach(col => col.innerHTML = '');
+            const stageCounts = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+
+            tasks.forEach(task => {
+                if (!taskPassesFilters(task)) return;
+                stageCounts[task.stage]++;
+                const cardHTML = createCardHTML(task);
+                const col = document.querySelector(`.kanban-col[data-stage="${task.stage}"]`);
+                if (col) col.insertAdjacentHTML('beforeend', cardHTML);
+            });
+
+            document.querySelectorAll('.kanban-col').forEach(col => {
+                const stage = col.dataset.stage;
+                const badge = col.parentElement.querySelector('.count-badge');
+                if (badge) badge.textContent = stageCounts[stage];
+            });
+
+            const wipCounterEl = document.getElementById('wip-counter');
+            const wipColEl = document.getElementById('wip-column');
+            const totalWip = tasks.filter(t => t.stage === 2).length;
+            wipCounterEl.textContent = totalWip;
+
+            wipCounterEl.className = 'text-sm font-bold ' + (totalWip > WIP_LIMIT ? 'text-red-500' : totalWip === WIP_LIMIT ? 'text-amber-400' : 'text-emerald-400');
+            wipColEl.classList.toggle('wip-breach-anim', totalWip > WIP_LIMIT);
+
+            attachDragListenersToCards();
+        }
+
+        function createCardHTML(task) {
+            const meta = projectMeta[task.project];
+            const isDone = task.stage === 4;
+            const dayBadge = task.day
+                ? `<span class="day-badge px-1.5 py-0.5 rounded bg-indigo-900/60 text-indigo-300 font-bold uppercase">${dayLabels[task.day]}</span>`
+                : '';
+
+            return `
+                <div class="task-card bg-slate-800 border border-slate-700 p-3 rounded-lg flex flex-col gap-2 color-${task.project} hover:bg-slate-700/80 group"
+                     draggable="true" data-id="${task.id}" style="border-left-width: 3px;">
+                    <div class="flex justify-between items-start gap-2">
+                        <h4 class="text-xs font-semibold text-slate-200 leading-snug ${isDone ? 'line-through text-slate-500' : ''}">${task.title}</h4>
+                        <i class="fa-solid ${meta.icon} text-[10px] opacity-70 mt-0.5" title="${meta.name}"></i>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-relaxed line-clamp-2">${task.desc}</p>
+                    <div class="flex justify-between items-center mt-1 pt-2 border-t border-slate-700/50">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-900/50 uppercase font-semibold text-slate-400 group-hover:text-slate-300 transition-colors">${meta.name}</span>
+                            ${dayBadge}
+                        </div>
+                        ${task.stage === 1 ? `<button onclick="moveToWIP('${task.id}')" class="text-[9px] bg-indigo-900/50 text-indigo-300 hover:text-white px-2 py-0.5 rounded border border-indigo-700 transition-colors z-10 relative">Puxar</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        let draggedElementId = null;
+
+        function attachDragListenersToCards() {
+            document.querySelectorAll('.task-card').forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    draggedElementId = card.dataset.id;
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', draggedElementId);
+                });
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                    draggedElementId = null;
+                    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+                });
+            });
+        }
+
+        function setupDragAndDrop() {
+            document.querySelectorAll('.kanban-col').forEach(col => {
+                col.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    col.classList.add('drag-over');
+                });
+                col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+                col.addEventListener('drop', e => {
+                    e.preventDefault();
+                    col.classList.remove('drag-over');
+                    const stageId = parseInt(col.dataset.stage);
+                    if (draggedElementId !== null) handleMove(draggedElementId, stageId);
+                });
+            });
+        }
+
+        function handleMove(taskId, newStage) {
+            if (newStage === 2) {
+                const currentWIP = tasks.filter(t => t.stage === 2 && t.id !== taskId).length;
+                if (currentWIP >= WIP_LIMIT) {
+                    if (!confirm(`⚠️ ATENÇÃO: WIP Limit Violado.\nVocê já tem ${currentWIP} tarefa(s) em andamento. Mover esta tarefa causará perda de contexto.\nDeseja forçar a entrada?`)) {
+                        renderBoard();
+                        return;
+                    }
+                }
+            }
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1 && tasks[taskIndex].stage !== newStage) {
+                tasks[taskIndex].stage = newStage;
+                save();
+                renderBoard();
+            }
+        }
+
+        function moveToWIP(taskId) { handleMove(taskId, 2); }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            init();
+            setFilter('all');
+            setDayFilter('all');
+        });
+    </script>
+</body>
+
+</html>
