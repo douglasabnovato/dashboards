@@ -1,8 +1,28 @@
-# 🚀 learnTECH OS — Growth Hub & Tactical Dashboard Suite
+# 🚀 LearnTECH OS — Growth Hub & Tactical Dashboard Suite
 
 Sistema Integrado de Gestão Tática, Análise de Performance e Simulador de Tráfego Pago do ecossistema **learnTECH** (com foco na Business Unit **ByteClass** e suporte às demais BUs).
 
 O projeto é estruturado como um **Portal Modular Desacoplado**, onde cada dashboard e quadro Kanban funciona como uma aplicação independente (`.html` autônomo), sendo centralizado e gerenciado através de uma aplicação de navegação raiz (`index.html`).
+
+---
+
+## 🔄 O Ciclo Operacional de Gestão (Dashboard → Tarefas)
+
+```plaintext
+ ┌───────────────────┐        📊 1. ANALISAR (Dashboard)
+ │   Meta Ads / CRM  │        • Ler KPIs (CPA, CPC, Conversão)
+ └─────────┬─────────┘        • Simular cenários no Analytics v2
+           │
+           ▼
+ ┌───────────────────┐        💡 2. DECIDIR (Estratégia)
+ │  Dashboard (v2)   │        • Identificar gargalos (ex: CPA subindo)
+ └─────────┬─────────┘        • Definir ação corretiva
+           │
+           ▼
+ ┌───────────────────┐        📋 3. EXECUTAR (Kanban)
+ │  Kanban Semanal   │        • Criar card tático com código (ex: B.1.d)
+ └───────────────────┘        • Alocar no dia da semana e respeitar WIP=1
+```
 
 ---
 
