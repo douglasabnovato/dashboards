@@ -1,0 +1,13 @@
+# Arquivos gerados e locais que não vão para o Git
+target/
+data/
+*.log
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+# fim do arquivo

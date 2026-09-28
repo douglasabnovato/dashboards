@@ -1,0 +1,95 @@
+<!-- Kanban tático semanal: filtros por BU e dia, cinco colunas, movimentos com WIP Limit = 1 e restauração -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/layout.xhtml"
+                xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core" xmlns:p="primefaces">
+    <ui:define name="titulo">Kanban</ui:define>
+    <ui:define name="conteudo">
+        <h:form id="form">
+            <div class="kanban-topo">
+                <div>
+                    <h1>Tactical Portfolio Manager</h1>
+                    <p class="lead">Semana #{kanban.quadro ne null ? kanban.quadro.semana() : ''}</p>
+                </div>
+                <h:panelGroup id="wip" layout="block" styleClass="wip #{kanban.wipCheio ? 'wip-cheio' : ''}">
+                    WIP Limit global: <strong>#{kanban.quadro ne null ? kanban.quadro.emAndamento() : 0} / #{kanban.quadro ne null ? kanban.quadro.wipLimit() : 1}</strong> ativa
+                </h:panelGroup>
+                <div class="acoes-topo">
+                    <p:commandButton value="Restaurar quadro" icon="pi pi-refresh" action="#{kanban.restaurar}"
+                                     update="@form" styleClass="ui-button-outlined">
+                        <p:confirm header="Restaurar quadro" message="Voltar todas as tarefas para o estado inicial?"
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </div>
+            </div>
+
+            <div class="filtros">
+                <h:outputLabel for="projeto" value="Projeto" styleClass="rotulo"/>
+                <p:selectOneButton id="projeto" value="#{kanban.projeto}">
+                    <f:selectItem itemValue="" itemLabel="Todos"/>
+                    <f:selectItems value="#{kanban.projetos}" var="bu" itemValue="#{bu.name()}"
+                                   itemLabel="#{bu.letra()} - #{bu.nome()}"/>
+                    <p:ajax listener="#{kanban.carregar}" update="@form"/>
+                </p:selectOneButton>
+            </div>
+            <div class="filtros">
+                <h:outputLabel for="dia" value="Dia" styleClass="rotulo"/>
+                <p:selectOneButton id="dia" value="#{kanban.dia}" unselectable="false">
+                    <f:selectItems value="#{kanban.dias}" var="d" itemValue="#{d.name()}" itemLabel="#{kanban.rotuloDia(d)}"/>
+                    <p:ajax listener="#{kanban.carregar}" update="@form"/>
+                </p:selectOneButton>
+            </div>
+
+            <h:panelGroup layout="block" aria-live="polite">
+                <h:panelGroup rendered="#{not empty kanban.erro}" layout="block" styleClass="alerta" role="alert">#{kanban.erro}</h:panelGroup>
+                <h:panelGroup rendered="#{not empty kanban.aviso}" layout="block" styleClass="aviso" role="status">#{kanban.aviso}</h:panelGroup>
+            </h:panelGroup>
+
+            <div class="quadro">
+                <ui:repeat value="#{kanban.etapas}" var="etapa">
+                    <section class="coluna #{etapa.name() eq 'DOING' ? 'coluna-doing' : ''}" aria-labelledby="col-#{etapa.name()}">
+                        <h2 id="col-#{etapa.name()}" class="coluna-titulo">
+                            #{etapa.rotulo()}#{etapa.name() eq 'DOING' ? ' (limite: 1)' : ''}
+                            <span class="contador">#{kanban.tarefas(etapa).size()}</span>
+                        </h2>
+                        <ui:repeat value="#{kanban.tarefas(etapa)}" var="t">
+                            <article class="cartao-tarefa bu-#{t.projeto().name().toLowerCase()}">
+                                <h3 class="#{t.etapa().name() eq 'CONCLUIDO' ? 'riscado' : ''}">#{t.titulo()}</h3>
+                                <h:outputText rendered="#{not empty t.descricao()}" value="#{t.descricao()}" styleClass="descricao"/>
+                                <div class="rodape-tarefa">
+                                    <span class="selo">#{t.projeto().nome()}</span>
+                                    <h:outputText rendered="#{t.dia() ne null}" value="#{t.dia().name()}" styleClass="selo selo-dia"/>
+                                </div>
+                                <div class="acoes-tarefa">
+                                    <p:commandButton icon="pi pi-arrow-left" rendered="#{etapa.ordinal() gt 0}"
+                                                     title="Mover #{t.titulo()} para #{etapa.anterior().rotulo()}"
+                                                     ariaLabel="Mover #{t.titulo()} para #{etapa.anterior().rotulo()}"
+                                                     action="#{kanban.mover(t.id(), etapa.anterior().name())}"
+                                                     update="@form" styleClass="ui-button-text"/>
+                                    <p:commandButton value="Puxar" rendered="#{etapa.name() eq 'TODO'}"
+                                                     ariaLabel="Puxar #{t.titulo()} para Doing"
+                                                     action="#{kanban.mover(t.id(), 'DOING')}" update="@form"
+                                                     styleClass="ui-button-sm"/>
+                                    <p:commandButton icon="pi pi-arrow-right" rendered="#{etapa.name() ne 'CONCLUIDO' and etapa.name() ne 'TODO'}"
+                                                     title="Mover #{t.titulo()} para #{etapa.proxima().rotulo()}"
+                                                     ariaLabel="Mover #{t.titulo()} para #{etapa.proxima().rotulo()}"
+                                                     action="#{kanban.mover(t.id(), etapa.proxima().name())}"
+                                                     update="@form" styleClass="ui-button-text"/>
+                                </div>
+                            </article>
+                        </ui:repeat>
+                    </section>
+                </ui:repeat>
+            </div>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="Sim, restaurar" type="button" styleClass="ui-confirmdialog-yes"/>
+                <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-outlined"/>
+            </p:confirmDialog>
+        </h:form>
+        <form method="post" action="#{request.contextPath}/logout" class="sair">
+            <input type="hidden" name="#{_csrf.parameterName}" value="#{_csrf.token}"/>
+            <button type="submit" class="botao">Sair</button>
+        </form>
+    </ui:define>
+</ui:composition>
+<!-- fim de kanban.xhtml -->

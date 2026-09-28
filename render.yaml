@@ -1,0 +1,46 @@
+# Blueprint do Render (plano gratuito): API e Web como serviços Docker separados, com memória ajustada para 512 MB
+services:
+  - type: web
+    name: learntech-dashboards-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: DASHBOARDS_API_KEY
+        generateValue: true
+      - key: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+        value: "3"
+      - key: SERVER_TOMCAT_THREADS_MAX
+        value: "20"
+  - type: web
+    name: learntech-dashboards-web
+    runtime: docker
+    plan: free
+    dockerfilePath: ./web/Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: DASHBOARDS_API_URL
+        value: https://learntech-dashboards-api.onrender.com
+      - key: DASHBOARDS_API_KEY
+        fromService:
+          type: web
+          name: learntech-dashboards-api
+          envVarKey: DASHBOARDS_API_KEY
+      - key: KANBAN_USUARIO
+        value: admin
+      - key: KANBAN_SENHA
+        sync: false
+      - key: SERVER_TOMCAT_THREADS_MAX
+        value: "20"
+# fim do render.yaml

@@ -1,0 +1,94 @@
+<!-- Histórico Meta Ads: filtro de fase, KPIs, gráficos, tabela consolidada e diagnóstico do especialista -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/layout.xhtml"
+                xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core" xmlns:p="primefaces">
+    <ui:define name="titulo">Analytics</ui:define>
+    <ui:define name="conteudo">
+        <h1>Histórico Real de Tráfego Pago</h1>
+        <p class="lead">Conta Byte Class 01 · Meta Ads (Facebook e Instagram) · Juiz de Fora, raio de 20 km.</p>
+
+        <h:form id="form">
+            <div class="filtros">
+                <h:outputLabel for="fase" value="Fase" styleClass="rotulo"/>
+                <p:selectOneButton id="fase" value="#{analytics.fase}">
+                    <f:selectItem itemValue="" itemLabel="Todas as Fases"/>
+                    <f:selectItem itemValue="1" itemLabel="Fase 1: Aprendizado"/>
+                    <f:selectItem itemValue="2" itemLabel="Fase 2: Virada de Chave"/>
+                    <f:selectItem itemValue="3" itemLabel="Fase 3: Manutenção"/>
+                    <p:ajax listener="#{analytics.carregar}" update="painel"/>
+                </p:selectOneButton>
+            </div>
+
+            <h:panelGroup id="painel" layout="block" aria-live="polite">
+                <h:panelGroup rendered="#{not empty analytics.erro}" layout="block" styleClass="alerta" role="alert">
+                    #{analytics.erro}
+                    <p:commandButton value="Tentar de novo" action="#{analytics.carregar}" update="painel"/>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{analytics.painel ne null}" layout="block">
+                    <h2 class="subtitulo">#{analytics.painel.rotuloFase()}</h2>
+                    <div class="kpis">
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Investimento Total</span>
+                            <span class="kpi-valor">#{fmt.moeda(analytics.painel.resumo().investimentoTotal())}</span>
+                            <span class="kpi-nota">Média #{fmt.moeda(analytics.painel.resumo().mediaMensal())}/mês</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Conversas Whats</span>
+                            <span class="kpi-valor">#{fmt.inteiro(analytics.painel.resumo().conversasTotais())}</span>
+                            <span class="kpi-nota">Leads de topo de funil</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Custo / Conversa</span>
+                            <span class="kpi-valor">#{fmt.moeda(analytics.painel.resumo().cpaMedio())}</span>
+                            <span class="kpi-nota">Gasto ÷ conversas</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">CPC Médio</span>
+                            <span class="kpi-valor">#{fmt.moeda(analytics.painel.resumo().cpcMedio())}</span>
+                            <span class="kpi-nota">#{fmt.inteiro(analytics.painel.resumo().cliquesTotais())} cliques</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">CTR Médio</span>
+                            <span class="kpi-valor">#{analytics.ctr}</span>
+                            <span class="kpi-nota">Conta toda, do relatório (pico de 1,8% no vídeo)</span>
+                        </div>
+                    </div>
+
+                    <div class="graficos">
+                        <section class="cartao">
+                            <h3>Investimento Mensal (R$) × Conversas</h3>
+                            <div class="grafico" role="img"
+                                 aria-label="Gráfico de barras do gasto mensal com linha de conversas; os mesmos dados estão na tabela abaixo">
+                                <p:chart value="#{analytics.graficoInvestimento}" style="width:100%;height:320px"/>
+                            </div>
+                        </section>
+                        <section class="cartao">
+                            <h3>Eficiência: CPC × Custo por Conversa</h3>
+                            <div class="grafico" role="img"
+                                 aria-label="Gráfico de linhas do CPC e do custo por conversa; os mesmos dados estão na tabela abaixo">
+                                <p:chart value="#{analytics.graficoEficiencia}" style="width:100%;height:320px"/>
+                            </div>
+                        </section>
+                    </div>
+
+                    <section class="cartao">
+                        <h3>Diagnóstico Estratégico</h3>
+                        <p>#{analytics.painel.analise()}</p>
+                    </section>
+
+                    <p:dataTable value="#{analytics.painel.meses()}" var="m" styleClass="tabela" reflow="true">
+                        <f:facet name="header">Tabela consolidada (dados auditados do relatório)</f:facet>
+                        <p:column headerText="Mês">#{m.rotulo()}</p:column>
+                        <p:column headerText="Gasto (R$)">#{fmt.moeda(m.gasto())}</p:column>
+                        <p:column headerText="Cliques">#{fmt.inteiro(m.cliques())}</p:column>
+                        <p:column headerText="Conversas Whats">#{m.conversas()}</p:column>
+                        <p:column headerText="CPC (R$)">#{fmt.moeda(m.cpc())}</p:column>
+                        <p:column headerText="Custo / Conversa">#{fmt.moeda(m.cpa())}</p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>
+<!-- fim de analytics.xhtml -->

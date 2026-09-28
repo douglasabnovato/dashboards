@@ -1,0 +1,51 @@
+<!-- Guia de operação: as três fases com números calculados, fórmulas do simulador e matriz de decisão por ROAS -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/layout.xhtml"
+                xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets">
+    <ui:define name="titulo">Guia</ui:define>
+    <ui:define name="conteudo">
+        <h1>Guia de Operação, Leitura e Tomada de Decisão</h1>
+        <p class="lead">Como interpretar o histórico da ByteClass e agir diante das simulações para crescer de forma rentável.</p>
+
+        <h2>As três fases da conta</h2>
+        <h:panelGroup rendered="#{not empty guia.erro}" layout="block" styleClass="alerta" role="alert">#{guia.erro}</h:panelGroup>
+        <div class="grade-cartoes">
+            <ui:repeat value="#{guia.fases}" var="f">
+                <section class="cartao fase fase-#{f.fase()}">
+                    <h3>#{f.rotuloFase()}</h3>
+                    <ul>
+                        <li>Investido: #{fmt.moeda(f.resumo().investimentoTotal())} · #{fmt.inteiro(f.resumo().conversasTotais())} conversas</li>
+                        <li>CPC ponderado: #{fmt.moeda(f.resumo().cpcMedio())}</li>
+                        <li>Custo por conversa: #{fmt.moeda(f.resumo().cpaMedio())}</li>
+                    </ul>
+                    <p>#{f.analise()}</p>
+                </section>
+            </ui:repeat>
+        </div>
+        <p class="nota">Aprendizados: anúncios de imagem estática têm alcance limitado e clique caro (Fase 1); o vídeo com a nova
+            copy é o carro-chefe para atrair programadores (Fase 2); orçamentos muito baixos saturam o público local (Fase 3).</p>
+
+        <h2>Fórmulas do simulador</h2>
+        <div class="grade-cartoes">
+            <section class="cartao"><h3>1. Leads mensais</h3><p><code>(Orçamento diário × 30) ÷ CPA</code><br/>Contatos que iniciam atendimento no WhatsApp no mês.</p></section>
+            <section class="cartao"><h3>2. Matrículas por mês</h3><p><code>Leads mensais × Conversão %</code><br/>Leads que fecham com o time comercial.</p></section>
+            <section class="cartao"><h3>3. Faturamento bruto</h3><p><code>Matrículas × Ticket médio</code><br/>Receita originada só do tráfego pago.</p></section>
+            <section class="cartao"><h3>4. ROAS</h3><p><code>Faturamento bruto ÷ Investimento</code><br/>ROAS 4,0x = R$ 4,00 de volta para cada R$ 1,00 gasto.</p></section>
+        </div>
+
+        <h2>Matriz de decisão por ROAS</h2>
+        <table class="tabela-simples">
+            <caption>Faixas usadas pelo termômetro e pelo diagnóstico do simulador</caption>
+            <thead><tr><th scope="col">Faixa de ROAS</th><th scope="col">Status</th><th scope="col">Ação recomendada</th></tr></thead>
+            <tbody>
+            <ui:repeat value="#{guia.faixas}" var="x">
+                <tr>
+                    <td>#{fmt.decimal(x.minimo(), 1)}x #{x.limite() eq null ? 'ou mais' : 'a menos de '.concat(fmt.decimal(x.limite(), 1)).concat('x')}</td>
+                    <td>#{x.status()}</td>
+                    <td>#{x.recomendacao()}</td>
+                </tr>
+            </ui:repeat>
+            </tbody>
+        </table>
+    </ui:define>
+</ui:composition>
+<!-- fim de guia.xhtml -->

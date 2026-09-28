@@ -1,0 +1,40 @@
+<!-- Hub central: cartões de acesso aos módulos de analytics e ao Kanban -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/layout.xhtml"
+                xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets">
+    <ui:define name="titulo">Início</ui:define>
+    <ui:define name="conteudo">
+        <h1>Growth Hub</h1>
+        <p class="lead">Portal integrado de analytics de tráfego pago e gestão tática do portfólio learnTECH.
+            O ciclo é: <strong>analisar</strong> os KPIs, <strong>decidir</strong> a ação e <strong>executar</strong> no Kanban.</p>
+
+        <h2>Analytics — Tráfego Pago e Performance</h2>
+        <div class="grade-cartoes">
+            <section class="cartao">
+                <h3>Histórico Meta Ads</h3>
+                <p>Dados auditados da conta ByteClass (Out/25 a Jul/26): KPIs, filtros por fase, gráficos e tabela mensal.</p>
+                <h:link outcome="/analytics" value="Abrir histórico" styleClass="botao"/>
+            </section>
+            <section class="cartao">
+                <h3>Simulador de Funil</h3>
+                <p>Orçamento, CPA, conversão e ticket; presets de cenário e termômetro de ROAS.</p>
+                <h:link outcome="/simulador" value="Abrir simulador" styleClass="botao"/>
+            </section>
+            <section class="cartao">
+                <h3>Guia e Manual de Leitura</h3>
+                <p>As três fases da conta, as fórmulas do simulador e a matriz de decisão por ROAS.</p>
+                <h:link outcome="/guia" value="Abrir guia" styleClass="botao"/>
+            </section>
+        </div>
+
+        <h2>Execução — Kanban Tático</h2>
+        <div class="grade-cartoes">
+            <section class="cartao">
+                <h3>Tactical Kanban OS (semanal)</h3>
+                <p>BUs MedTrem, ByteClass, Volta Express e Ecossistema, filtro por dia e WIP Limit de 1 tarefa em Doing.
+                    Requer login.</p>
+                <h:link outcome="/kanban" value="Abrir quadro" styleClass="botao"/>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>
+<!-- fim de index.xhtml -->

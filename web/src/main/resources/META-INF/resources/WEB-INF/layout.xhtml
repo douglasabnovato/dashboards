@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- Modelo comum das páginas: cabeçalho com navegação, link para pular ao conteúdo e rodapé -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"
+      xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets" xmlns:f="jakarta.faces.core">
+<f:view locale="pt_BR" contentType="text/html" encoding="UTF-8">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title><ui:insert name="titulo">learnTECH OS</ui:insert> · learnTECH OS</title>
+    <h:outputStylesheet name="css/app.css"/>
+</h:head>
+<h:body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <header class="topo">
+        <div class="marca">
+            <span class="marca-nome">learnTECH OS</span>
+            <span class="marca-sub">Growth Hub · ByteClass</span>
+        </div>
+        <nav aria-label="Módulos">
+            <ul class="nav">
+                <li><h:link outcome="/index" value="Início"/></li>
+                <li><h:link outcome="/analytics" value="Analytics"/></li>
+                <li><h:link outcome="/simulador" value="Simulador"/></li>
+                <li><h:link outcome="/guia" value="Guia"/></li>
+                <li><h:link outcome="/kanban" value="Kanban"/></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="conteudo" class="conteudo" tabindex="-1">
+        <ui:insert name="conteudo"/>
+    </main>
+    <footer class="rodape">
+        Dados de Meta Ads da conta Byte Class 01 (Out/2025 a Jul/2026) · fonte do relatório: Windsor.ai / Meta Ads.
+    </footer>
+</h:body>
+</f:view>
+</html>
+<!-- fim de layout.xhtml -->

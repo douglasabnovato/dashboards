@@ -1,0 +1,124 @@
+<!-- Simulador de funil: presets, quatro alavancas, projeção mensal, termômetro de ROAS e diagnóstico -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/layout.xhtml"
+                xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core" xmlns:p="primefaces" xmlns:pt="jakarta.faces.passthrough">
+    <ui:define name="titulo">Simulador</ui:define>
+    <ui:define name="conteudo">
+        <h1>Simulador Estratégico</h1>
+        <p class="lead">Projeção mensal (30 dias). Ajuste as alavancas e veja matrículas, faturamento e ROAS.</p>
+
+        <h:form id="form">
+            <div class="filtros">
+                <span class="rotulo" id="rotulo-presets">Presets rápidos</span>
+                <div role="group" aria-labelledby="rotulo-presets" class="presets">
+                    <ui:repeat value="#{simulador.presets}" var="p">
+                        <p:commandButton value="#{p.rotulo()}" action="#{simulador.aplicar(p.name())}"
+                                         update="@form" styleClass="ui-button-outlined"/>
+                    </ui:repeat>
+                </div>
+            </div>
+
+            <div class="alavancas">
+                <div class="alavanca">
+                    <h:outputLabel for="orcamento" value="Orçamento diário (R$ 10 a 200)"/>
+                    <h:inputText id="orcamento" value="#{simulador.orcamentoDiario}" pt:type="number" pt:min="10"
+                                 pt:max="200" pt:step="5" required="true" styleClass="campo">
+                        <f:validateDoubleRange minimum="10" maximum="200"/>
+                        <p:ajax event="change" listener="#{simulador.simular}" update="resultado msg-orcamento"/>
+                    </h:inputText>
+                    <p:slider for="orcamento" minValue="10" maxValue="200" step="5">
+                        <p:ajax event="slideEnd" listener="#{simulador.simular}" process="@this orcamento" update="resultado"/>
+                    </p:slider>
+                    <p:message id="msg-orcamento" for="orcamento"/>
+                </div>
+                <div class="alavanca">
+                    <h:outputLabel for="cpa" value="CPA esperado no WhatsApp (R$ 5 a 25)"/>
+                    <h:inputText id="cpa" value="#{simulador.cpa}" pt:type="number" pt:min="5" pt:max="25"
+                                 pt:step="0.5" required="true" styleClass="campo">
+                        <f:validateDoubleRange minimum="5" maximum="25"/>
+                        <p:ajax event="change" listener="#{simulador.simular}" update="resultado msg-cpa"/>
+                    </h:inputText>
+                    <p:slider for="cpa" minValue="5" maxValue="25" step="0.5">
+                        <p:ajax event="slideEnd" listener="#{simulador.simular}" process="@this cpa" update="resultado"/>
+                    </p:slider>
+                    <p:message id="msg-cpa" for="cpa"/>
+                    <small>Histórico: R$ 7,31 (vídeo) a R$ 12,53 (aprendizado).</small>
+                </div>
+                <div class="alavanca">
+                    <h:outputLabel for="conversao" value="Conversão comercial (% de 1 a 15)"/>
+                    <h:inputText id="conversao" value="#{simulador.conversao}" pt:type="number" pt:min="1"
+                                 pt:max="15" pt:step="0.5" required="true" styleClass="campo">
+                        <f:validateDoubleRange minimum="1" maximum="15"/>
+                        <p:ajax event="change" listener="#{simulador.simular}" update="resultado msg-conversao"/>
+                    </h:inputText>
+                    <p:slider for="conversao" minValue="1" maxValue="15" step="0.5">
+                        <p:ajax event="slideEnd" listener="#{simulador.simular}" process="@this conversao" update="resultado"/>
+                    </p:slider>
+                    <p:message id="msg-conversao" for="conversao"/>
+                    <small>5% é a média de EdTech.</small>
+                </div>
+                <div class="alavanca">
+                    <h:outputLabel for="ticket" value="Ticket médio do curso (R$ 200 a 3.000)"/>
+                    <h:inputText id="ticket" value="#{simulador.ticket}" pt:type="number" pt:min="200"
+                                 pt:max="3000" pt:step="50" required="true" styleClass="campo">
+                        <f:validateDoubleRange minimum="200" maximum="3000"/>
+                        <p:ajax event="change" listener="#{simulador.simular}" update="resultado msg-ticket"/>
+                    </h:inputText>
+                    <p:slider for="ticket" minValue="200" maxValue="3000" step="50">
+                        <p:ajax event="slideEnd" listener="#{simulador.simular}" process="@this ticket" update="resultado"/>
+                    </p:slider>
+                    <p:message id="msg-ticket" for="ticket"/>
+                </div>
+            </div>
+
+            <h:panelGroup id="resultado" layout="block" aria-live="polite">
+                <h:panelGroup rendered="#{not empty simulador.erro}" layout="block" styleClass="alerta" role="alert">
+                    #{simulador.erro}
+                </h:panelGroup>
+                <h:panelGroup rendered="#{simulador.resultado ne null}" layout="block">
+                    <div class="kpis">
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Investimento mensal</span>
+                            <span class="kpi-valor">#{fmt.moeda(simulador.resultado.investimentoMensal())}</span>
+                            <span class="kpi-nota">#{fmt.inteiro(simulador.resultado.conversasMes())} conversas/mês</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Matrículas projetadas</span>
+                            <span class="kpi-valor">#{fmt.decimal(simulador.resultado.matriculas(), 1)} alunos</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Faturamento bruto</span>
+                            <span class="kpi-valor">#{fmt.moeda(simulador.resultado.faturamento())}</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Lucro bruto s/ anúncios</span>
+                            <span class="kpi-valor">#{fmt.moeda(simulador.resultado.lucroBruto())}</span>
+                            <span class="kpi-nota">Receita − gasto de mídia</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">ROAS projetado</span>
+                            <span class="kpi-valor">#{fmt.decimal(simulador.resultado.roas(), 2)}x</span>
+                        </div>
+                    </div>
+
+                    <section class="cartao termometro #{simulador.classeFaixa}">
+                        <h2 class="subtitulo">Status de saúde do negócio: #{simulador.resultado.faixa().status()}</h2>
+                        <div class="barra" role="meter" aria-valuemin="0" aria-valuemax="100"
+                             aria-valuenow="#{simulador.resultado.percentualTermometro()}"
+                             aria-label="Termômetro de ROAS">
+                            <div class="barra-preenchida" style="width: #{simulador.resultado.percentualTermometro()}%"></div>
+                        </div>
+                        <div class="escala"><span>0x (prejuízo)</span><span>2,5x</span><span>5,0x+</span></div>
+                        <p>#{simulador.resultado.faixa().recomendacao()}</p>
+                    </section>
+
+                    <section class="cartao">
+                        <h3>Diagnóstico do especialista</h3>
+                        <p>#{simulador.resultado.diagnostico()}</p>
+                    </section>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>
+<!-- fim de simulador.xhtml -->

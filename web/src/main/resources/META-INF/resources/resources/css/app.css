@@ -1,0 +1,92 @@
+/* Estilos do learnTECH OS sobre o tema padrão do PrimeFaces: layout responsivo, cartões, KPIs e Kanban */
+:root {
+  --cor-fundo: #f8fafc;
+  --cor-texto: #0f172a;
+  --cor-suave: #475569;
+  --cor-borda: #cbd5e1;
+  --cor-marca: #4338ca;
+  --cor-cartao: #ffffff;
+  --medtrem: #be123c;
+  --byteclass: #4338ca;
+  --volta: #b45309;
+  --ecossistema: #047857;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cor-fundo); color: var(--cor-texto); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.5; }
+.pular { position: absolute; left: -999px; top: 0; background: #fff; padding: .5rem 1rem; z-index: 10; }
+.pular:focus { left: 1rem; }
+.topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem clamp(1rem, 4vw, 3rem); background: #1e1b4b; color: #fff; }
+.marca-nome { font-weight: 700; font-size: 1.2rem; display: block; }
+.marca-sub { font-size: .85rem; color: #c7d2fe; }
+.nav { list-style: none; display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin: 0; padding: 0; }
+.nav a { color: #fff; text-decoration: none; padding: .25rem 0; border-bottom: 2px solid transparent; }
+.nav a:hover, .nav a:focus-visible { border-bottom-color: #a5b4fc; }
+.conteudo { max-width: 1280px; margin: 0 auto; padding: 1.5rem clamp(1rem, 4vw, 3rem) 3rem; }
+.conteudo:focus { outline: none; }
+.rodape { text-align: center; color: var(--cor-suave); font-size: .85rem; padding: 2rem 1rem; border-top: 1px solid var(--cor-borda); }
+h1 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 .25rem; }
+h2 { font-size: 1.25rem; margin: 2rem 0 .75rem; }
+.subtitulo { margin-top: 1rem; }
+.lead { color: var(--cor-suave); margin: 0 0 1.25rem; }
+.nota { color: var(--cor-suave); font-size: .9rem; }
+.grade-cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.cartao { background: var(--cor-cartao); border: 1px solid var(--cor-borda); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.cartao h3 { margin-top: 0; font-size: 1.05rem; }
+.botao, .botao-link { display: inline-block; background: var(--cor-marca); color: #fff; border: 0; border-radius: 8px; padding: .5rem 1rem; text-decoration: none; cursor: pointer; font: inherit; }
+.botao:hover, .botao:focus-visible { background: #3730a3; }
+.filtros { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; margin-bottom: 1rem; }
+.rotulo { font-weight: 600; }
+.presets { display: flex; flex-wrap: wrap; gap: .5rem; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; margin: 1rem 0; }
+.kpi { background: var(--cor-cartao); border: 1px solid var(--cor-borda); border-radius: 12px; padding: .9rem 1rem; display: flex; flex-direction: column; }
+.kpi-rotulo { font-size: .85rem; color: var(--cor-suave); }
+.kpi-valor { font-size: 1.5rem; font-weight: 700; }
+.kpi-nota { font-size: .8rem; color: var(--cor-suave); }
+.graficos { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+.grafico { position: relative; height: 320px; }
+.alerta { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; border-radius: 8px; padding: .75rem 1rem; margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.aviso { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 8px; padding: .75rem 1rem; margin: 1rem 0; }
+.alavancas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.alavanca { background: var(--cor-cartao); border: 1px solid var(--cor-borda); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+.alavanca small { color: var(--cor-suave); }
+.campo { padding: .45rem .6rem; border: 1px solid #94a3b8; border-radius: 6px; font: inherit; width: 100%; }
+.termometro .barra { height: 14px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.barra-preenchida { height: 100%; background: var(--cor-marca); transition: width .3s; }
+.faixa-prejuizo .barra-preenchida { background: #be123c; }
+.faixa-margem_apertada .barra-preenchida { background: #b45309; }
+.faixa-saudavel .barra-preenchida { background: #047857; }
+.faixa-escala_de_ouro .barra-preenchida { background: #6d28d9; }
+.escala { display: flex; justify-content: space-between; font-size: .8rem; color: var(--cor-suave); }
+.tabela-simples { width: 100%; border-collapse: collapse; background: var(--cor-cartao); }
+.tabela-simples caption { text-align: left; color: var(--cor-suave); padding-bottom: .5rem; }
+.tabela-simples th, .tabela-simples td { border: 1px solid var(--cor-borda); padding: .6rem; text-align: left; vertical-align: top; }
+.fase-1 { border-top: 4px solid #be123c; }
+.fase-2 { border-top: 4px solid #047857; }
+.fase-3 { border-top: 4px solid #b45309; }
+.kanban-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+.wip { border: 1px solid var(--cor-borda); border-radius: 8px; padding: .5rem .9rem; background: var(--cor-cartao); }
+.wip-cheio { border-color: #b45309; color: #92400e; }
+.quadro { display: grid; grid-template-columns: repeat(5, minmax(220px, 1fr)); gap: .75rem; overflow-x: auto; padding-bottom: 1rem; }
+.coluna { background: #eef2ff; border-radius: 12px; padding: .75rem; min-height: 200px; }
+.coluna-doing { background: #e0e7ff; outline: 2px dashed #6366f1; }
+.coluna-titulo { font-size: .95rem; margin: 0 0 .75rem; display: flex; justify-content: space-between; align-items: center; }
+.contador { background: #fff; border-radius: 999px; padding: 0 .55rem; font-size: .8rem; }
+.cartao-tarefa { background: #fff; border: 1px solid var(--cor-borda); border-left: 4px solid var(--cor-marca); border-radius: 8px; padding: .6rem .7rem; margin-bottom: .6rem; }
+.cartao-tarefa h3 { font-size: .9rem; margin: 0 0 .25rem; }
+.cartao-tarefa .descricao { display: block; font-size: .8rem; color: var(--cor-suave); }
+.bu-medtrem { border-left-color: var(--medtrem); }
+.bu-byteclass { border-left-color: var(--byteclass); }
+.bu-volta_express { border-left-color: var(--volta); }
+.bu-ecossistema { border-left-color: var(--ecossistema); }
+.riscado { text-decoration: line-through; color: var(--cor-suave); }
+.rodape-tarefa { display: flex; gap: .4rem; margin-top: .4rem; flex-wrap: wrap; }
+.selo { font-size: .7rem; text-transform: uppercase; font-weight: 600; background: #f1f5f9; color: #334155; border-radius: 4px; padding: .05rem .4rem; }
+.selo-dia { background: #e0e7ff; color: #3730a3; }
+.acoes-tarefa { display: flex; justify-content: flex-end; gap: .25rem; margin-top: .4rem; }
+.sair { margin-top: 1rem; }
+@media (max-width: 720px) {
+  .quadro { grid-template-columns: repeat(5, 80vw); scroll-snap-type: x mandatory; }
+  .coluna { scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) { .barra-preenchida { transition: none; } }
+/* fim de app.css */
