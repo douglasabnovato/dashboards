@@ -1,119 +1,106 @@
-# 🚀 LearnTECH OS — Growth Hub & Tactical Dashboard Suite
+# learnTECH OS — Growth Hub (Java)
 
-Sistema Integrado de Gestão Tática, Análise de Performance e Simulador de Tráfego Pago do ecossistema **learnTECH** (com foco na Business Unit **ByteClass** e suporte às demais BUs).
+Sistema de gestão tática, análise de performance e simulador de tráfego pago do ecossistema **learnTECH**, com foco na BU **ByteClass**. Esta versão 2.0 reescreve a suíte HTML original em **Java**: API em Spring Boot e interface em JSF/PrimeFaces, usando os mesmos dados, fórmulas, presets e regras.
 
-O projeto é estruturado como um **Portal Modular Desacoplado**, onde cada dashboard e quadro Kanban funciona como uma aplicação independente (`.html` autônomo), sendo centralizado e gerenciado através de uma aplicação de navegação raiz (`index.html`).
+## Em produção
 
----
+- Web: `https://learntech-dashboards-web.onrender.com` (esperada) · API: `https://learntech-dashboards-api.onrender.com`
+- Hospedagem gratuita: Render (2 serviços Docker, `render.yaml`) + Neon (PostgreSQL).
+- Passo a passo, ordem segura e checagens: [docs/DEPLOY.md](docs/DEPLOY.md).
 
-## 🔄 O Ciclo Operacional de Gestão (Dashboard → Tarefas)
+## O ciclo de gestão
 
-```plaintext
- ┌───────────────────┐        📊 1. ANALISAR (Dashboard)
- │   Meta Ads / CRM  │        • Ler KPIs (CPA, CPC, Conversão)
- └─────────┬─────────┘        • Simular cenários no Analytics v2
-           │
-           ▼
- ┌───────────────────┐        💡 2. DECIDIR (Estratégia)
- │  Dashboard (v2)   │        • Identificar gargalos (ex: CPA subindo)
- └─────────┬─────────┘        • Definir ação corretiva
-           │
-           ▼
- ┌───────────────────┐        📋 3. EXECUTAR (Kanban)
- │  Kanban Semanal   │        • Criar card tático com código (ex: B.1.d)
- └───────────────────┘        • Alocar no dia da semana e respeitar WIP=1
+```text
+ Meta Ads / CRM ──► 1. ANALISAR (Analytics)   KPIs: CPA, CPC, conversas; filtro por fase
+                    2. DECIDIR  (Simulador)   presets, alavancas, termômetro de ROAS, guia
+                    3. EXECUTAR (Kanban)      cartão com código (ex.: B.1.d), dia da semana, WIP = 1
 ```
 
----
+## Módulos
 
-## 🛠️ Tecnologias Utilizadas
+| Módulo | Stack | Papel |
+|---|---|---|
+| `core/` | Java 21 puro | Regras: fases, KPIs ponderados, simulador de funil, faixas de ROAS, WIP Limit, filtros do Kanban |
+| `api/` | Spring Boot 3.5, Spring Data JPA, Flyway, H2 (local) / PostgreSQL (produção) | REST em `/api/*`, dados originais carregados por migração |
+| `web/` | Spring Boot 3.5, JoinFaces 5.5, PrimeFaces 15, Spring Security | Páginas Início, Analytics, Simulador, Guia e Kanban (com login) |
 
-Toda a suite foi construída focando em **desempenho, facilidade de implantação e zero dependência de servidor** (Client-side puro):
+## Telas
 
-* **HTML5 Semantic & Modular Framework**
-* **Tailwind CSS (via CDN)** — Interface *Dark Mode Pro* moderna e responsiva
-* **Chart.js (via CDN)** — Gráficos interativos para análise de dados e evolução financeira
-* **FontAwesome 6 (via CDN)** — Iconografia tática do ecossistema
-* **JavaScript ES6+** — Lógica do simulador em tempo real, manipulação de estados no localStorage, movimentação de quadros e filtros dinâmicos
+- **Início**: cartões de acesso aos módulos (substitui o `index.html` com iframe).
+- **Analytics**: histórico Out/25 a Jul/26 com filtro por fase, KPIs (investimento, conversas, custo por conversa, CPC, CTR do relatório), gráfico de gasto × conversas, gráfico de CPC × custo por conversa, tabela mensal e diagnóstico.
+- **Simulador**: presets Retomada Inteligente, High Ticket Bootcamp, Alerta Baixa Conversão e Baseline v1; alavancas de orçamento, CPA, conversão e ticket; projeção mensal; termômetro de ROAS; diagnóstico.
+- **Guia**: números de cada fase calculados a partir dos dados, fórmulas do simulador e matriz de decisão por ROAS.
+- **Kanban**: 37 cartões da semana 27 a 31/07/2026 nas BUs MedTrem, ByteClass, Volta Express e Ecossistema; filtro por BU e por dia; colunas Backlog, To-Do, Doing, QA e Concluído; **WIP Limit de 1 tarefa em Doing, garantido pela API**; restaurar quadro.
 
----
+## API
 
-## 📁 Arquitetura do Repositório
+| Método e rota | Descrição | Acesso |
+|---|---|---|
+| `GET /api/metricas?fase=1..3` | Painel: KPIs, meses e análise (sem `fase` = todas) | público |
+| `GET /api/fases` | Fases com rótulo e período | público |
+| `GET /api/simulador/presets` | Cenários prontos | público |
+| `GET /api/simulador/faixas` | Matriz de decisão por ROAS | público |
+| `POST /api/simulador` | Projeção para `{orcamentoDiario, cpa, conversaoPercentual, ticketMedio}` | público |
+| `GET /api/kanban?projeto=BYTECLASS&dia=SEG` | Quadro filtrado (`dia` aceita `TODOS`, `SEM_DIA`, `SEG`…`SEX`) | `X-Api-Key` |
+| `PATCH /api/kanban/tarefas/{id}` | `{"etapa":"DOING"}`; 409 se o WIP estourar | `X-Api-Key` |
+| `POST /api/kanban/reset` | Volta o quadro ao estado inicial | `X-Api-Key` |
+| `GET /actuator/health` | Saúde | público |
+
+Erros seguem Problem Details (RFC 9457), sem stack trace.
+
+## Como executar
+
+Pré-requisitos: **JDK 21** e **Maven 3.9** (ou o IntelliJ, que traz o Maven embutido).
+
+```bash
+mvn verify                                   # compila e roda todos os testes
+
+# terminal 1 — API em http://localhost:8081 (H2 em ./data, criado na primeira execução)
+DASHBOARDS_API_KEY=troque-esta-chave mvn -pl api -am spring-boot:run
+
+# terminal 2 — Web em http://localhost:8080
+DASHBOARDS_API_KEY=troque-esta-chave KANBAN_SENHA=sua-senha mvn -pl web -am spring-boot:run
+```
+
+No Windows (PowerShell), defina as variáveis antes: `$env:DASHBOARDS_API_KEY="troque-esta-chave"`.
+
+O login do Kanban usa `KANBAN_USUARIO` (padrão `admin`) e `KANBAN_SENHA`. Sem `KANBAN_SENHA`, o Kanban fica bloqueado. Sem `DASHBOARDS_API_KEY` na API, as rotas do Kanban respondem 401.
+
+## Testes
+
+- `core`: KPIs contra o relatório (1.007 conversas, CPA R$ 9,27, CPC R$ 0,94), totais de cada fase, fórmulas e presets do simulador, limites das faixas de ROAS, WIP Limit e filtros.
+- `api`: integração com H2 + Flyway (dados originais, filtros, 400/401/404/409).
+- `web`: formatação pt-BR, JSON dos gráficos, beans com API simulada, cliente HTTP contra servidor real (PATCH e 409) e fumaça das páginas.
+
+## Publicar (gratuito)
+
+Resumo (detalhes em [docs/DEPLOY.md](docs/DEPLOY.md)):
+
+1. No **Neon**, crie o banco `dashboards` (um projeto para o portfólio, um banco por app) e copie host, usuário e senha.
+2. No **Render**, **New → Blueprint** com este repositório; ele lê o `render.yaml` e cria `learntech-dashboards-api` e `learntech-dashboards-web` (plano free, Docker, deploy a cada commit).
+3. Informe na API: `SPRING_DATASOURCE_URL` (`jdbc:postgresql://<host>/dashboards?sslmode=require`), `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD`. A `DASHBOARDS_API_KEY` é gerada e repassada à Web.
+4. Informe na Web: `KANBAN_SENHA`. A `DASHBOARDS_API_URL` já vem fixada no `render.yaml`.
+
+No plano free, os serviços "dormem" após 15 min sem acesso; a primeira visita pode levar cerca de 1 minuto (a web mostra aviso e botão "Tentar de novo"). Os Dockerfiles limitam a memória da JVM para caber nos 512 MB do plano.
+
+## Como adicionar dados
+
+- **Novo mês de Meta Ads**: crie `api/src/main/resources/db/migration/V3__<descricao>.sql` com o `INSERT` em `metrica_mensal` (nunca edite migrações já aplicadas).
+- **Nova semana do Kanban**: nova migração com os cartões e ajuste `KANBAN_SEMANA`.
+
+## Estrutura
 
 ```text
 dashboards/
-│
-├── dashboard/                               # Módulos Analytics e Relatórios de Mídia
-│   ├── 2-analytics_dashboard_v1-14-08-2026.html  # Baseline auditado (Meta Ads Out/25 - Jul/26)
-│   └── 3-analytics_dashboard_v2-14-08-2026.html  # Dashboard v2 (Simulador + Guia Tático + ROAS)
-│
-├── kanban/                                  # Quadros Operacionais de Gestão Tática
-│   └── 1-weekly_dashboard-31-07-2026.html         # Tactical Kanban OS (Filtros BU, Dias e WIP Limit)
-│
-├── index.html                               # Portal / Hub Central de Navegação
-└── readme.md                                # Documentação do projeto
+├── core/   domínio (metricas, simulador, kanban) + testes
+├── api/    Spring Boot REST + Flyway (V1 estrutura, V2 dados originais) + testes
+├── web/    JoinFaces/PrimeFaces (META-INF/resources/*.xhtml) + testes
+├── docs/   ANALISE, ARQUITETURA, PLANO-DE-ACAO
+├── ci/     workflow do GitHub Actions (mover para .github/workflows/)
+├── render.yaml, .env.example
+└── pom.xml
 ```
 
----
+## Autor
 
-## 🧩 Detalhamento dos Módulos
-
-### 📊 1. Pasta `dashboard/` (Analytics & Mídia Paga)
-
-* **`2-analytics_dashboard_v1-14-08-2026.html` (v1.0 Baseline):**
-  * **Objetivo:** Registrar com rigor auditado o histórico de tráfego pago da ByteClass (Meta Ads).
-  * **Dados Consolidados:** R$ 9.335 investidos | 1.007 conversas no WhatsApp | CPA Médio R$ 9,27 | CPC R$ 0,94.
-  * **Recursos:** Filtros por fase histórica (Aprendizado, Virada de Chave e Manutenção), tabela mensal completa e gráficos de investimento x resultado.
-
-* **`3-analytics_dashboard_v2-14-08-2026.html` (v2.0 Integrado + Guia):**
-  * **Objetivo:** Unir o simulador financeiro ao guia de leitura estratégica para tomada de decisão.
-  * **Recursos:**
-    * **Simulador de Funil:** Ajuste de orçamento diário, CPA esperado, taxa de conversão comercial do WhatsApp e Ticket Médio das formações.
-    * **Presets Rápidos:** Botões de cenários (*Retomada Inteligente*, *High Ticket Bootcamp* e *Alerta de Baixa Conversão*).
-    * **Termômetro de ROAS:** Diagnóstico financeiro em tempo real com orientações de leilão e escala.
-    * **Guia Interativo:** Aba exclusiva com fórmulas matemáticas, interpretação das 3 fases e matriz estratégica.
-
----
-
-### 📋 2. Pasta `kanban/` (Gestão Operacional)
-
-* **`1-weekly_dashboard-31-07-2026.html` (Tactical Kanban OS):**
-  * **Objetivo:** Gestão de capacidade e fluxo de trabalho semanal do ecossistema.
-  * **Recursos:**
-    * **Organização por Business Units (BUs):** `MedTrem` (Saúde/ERP), `ByteClass` (Educação), `Volta Express` (Logística) e `Ecossistema` (Transversal/Eventos).
-    * **Filtro Duplo:** Seleção combinada por Projeto/BU e por Dia da Semana (Segunda a Sexta).
-    * **Regra de Ouro (WIP Limit):** Limite estrito de **1 tarefa ativa na coluna *Doing*** com sistema de alertas visuais para evitar multitarefa e foco na conclusão.
-
----
-
-### 🌐 3. Raiz (`index.html`)
-
-* **Hub Central de Navegação:**
-  * Apresenta uma Home com cartões informativos de todos os dashboards e quadros da suite.
-  * **Visualizador Embutido (Viewport/Iframe):** Permite alternar entre qualquer relatório ou Kanban em 1 clique sem recarregar a página.
-  * Botões de acesso rápido para abrir qualquer arquivo diretamente em uma nova aba do navegador.
-
----
-
-## ➕ Como Adicionar Novos Dashboards ou Kanbans
-
-Para manter a organização do projeto ao criar novos módulos:
-
-1. **Salvar o arquivo na subpasta correta:**
-   * Se for um dashboard/relatório analítico: salve dentro de `dashboard/` (ex: `dashboard/4-funnel_analytics_v3.html`).
-   * Se for um quadro Kanban/tarefas: salve dentro de `kanban/` (ex: `kanban/2-sprint_kanban_aug2026.html`).
-
-2. **Registrar o novo módulo no `index.html`:**
-   * Abra o arquivo `index.html` na raiz.
-   * Adicione o novo card na seção correspondente (Dashboards ou Kanbans).
-   * Adicione a nova opção `<option>` no menu `<select id="quick-selector">` do visualizador para habilitar a troca rápida.
-
----
-
-## ⚡ Como Executar o Projeto
-
-Como a aplicação é 100% estática:
-
-1. Clone ou baixe o repositório na sua máquina.
-2. Dê dois cliques no arquivo `index.html` localizado na raiz.
-3. A aplicação abrirá instantaneamente em qualquer navegador moderno (Chrome, Edge, Firefox, Safari).
+Douglas A. B. Novato — projeto de portfólio e ferramenta interna do ecossistema learnTECH.
