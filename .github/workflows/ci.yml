@@ -1,4 +1,4 @@
-# CI: compila os três módulos e roda todos os testes (core, api com H2 + Flyway, web). Mova para .github/workflows/ci.yml
+# CI: compila os três módulos e roda todos os testes (core, api com H2 + Flyway, web)
 name: ci
 on: [push, pull_request]
 jobs:
