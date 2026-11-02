@@ -11,3 +11,6 @@ data/
 .DS_Store
 Thumbs.db
 # fim do arquivo
+node_modules/
+test-results/
+playwright-report/

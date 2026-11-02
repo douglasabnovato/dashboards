@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>learnTECH OS — Growth Hub & Portal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Portal do learnTECH OS com os dashboards estáticos de Analytics e Kanban.">
+    <!-- Gerado por: npm run css -->
+    <link rel="stylesheet" href="assets/portal.css">
     <style>
+        .icone { display: inline-block; width: 1em; height: 1em; fill: currentColor; vertical-align: -0.125em; }
         body {
             background-color: #090d16;
             color: #e2e8f0;
@@ -44,13 +44,15 @@
 </head>
 
 <body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+<!-- Ícones: Font Awesome Free, CC BY 4.0, https://fontawesome.com/license/free -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="i-arrow-up-right-from-square" viewBox="0 0 512 512"><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></symbol><symbol id="i-chart-line" viewBox="0 0 512 512"><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/></symbol><symbol id="i-cubes" viewBox="0 0 576 512"><path d="M290.8 48.6l78.4 29.7L288 109.5 206.8 78.3l78.4-29.7c1.8-.7 3.8-.7 5.7 0zM136 92.5V204.7c-1.3 .4-2.6 .8-3.9 1.3l-96 36.4C14.4 250.6 0 271.5 0 294.7V413.9c0 22.2 13.1 42.3 33.5 51.3l96 42.2c14.4 6.3 30.7 6.3 45.1 0L288 457.5l113.5 49.9c14.4 6.3 30.7 6.3 45.1 0l96-42.2c20.3-8.9 33.5-29.1 33.5-51.3V294.7c0-23.3-14.4-44.1-36.1-52.4l-96-36.4c-1.3-.5-2.6-.9-3.9-1.3V92.5c0-23.3-14.4-44.1-36.1-52.4l-96-36.4c-12.8-4.8-26.9-4.8-39.7 0l-96 36.4C150.4 48.4 136 69.3 136 92.5zM392 210.6l-82.4 31.2V152.6L392 121v89.6zM154.8 250.9l78.4 29.7L152 311.7 70.8 280.6l78.4-29.7c1.8-.7 3.8-.7 5.7 0zm18.8 204.4V354.8L256 323.2v95.9l-82.4 36.2zM421.2 250.9c1.8-.7 3.8-.7 5.7 0l78.4 29.7L424 311.7l-81.2-31.1 78.4-29.7zM523.2 421.2l-77.6 34.1V354.8L528 323.2v90.7c0 3.2-1.9 6-4.8 7.3z"/></symbol><symbol id="i-house" viewBox="0 0 576 512"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></symbol><symbol id="i-kanban" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 64V416H224V160H64zm384 0H288V416H448V160z"/></symbol><symbol id="i-play" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></symbol><symbol id="i-rotate-right" viewBox="0 0 512 512"><path d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5z"/></symbol><symbol id="i-window-maximize" viewBox="0 0 512 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM96 96H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></symbol></svg>
 
     <!-- CABEÇALHO PRINCIPAL DO HUB -->
     <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-500/20">
-                    <i class="fa-solid fa-cubes text-lg"></i>
+                    <svg class="icone text-lg" aria-hidden="true" focusable="false"><use href="#i-cubes"/></svg>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
@@ -67,11 +69,11 @@
             <nav class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
                 <button id="nav-home" onclick="switchView('home')"
                     class="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 transition-all flex items-center gap-2 shadow">
-                    <i class="fa-solid fa-house"></i> Home
+                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-house"/></svg> Home
                 </button>
                 <button id="nav-viewer" onclick="switchView('viewer')"
                     class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-window-maximize"></i> Visualizador
+                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-window-maximize"/></svg> Visualizador
                 </button>
             </nav>
         </div>
@@ -108,7 +110,7 @@
             <!-- SEÇÃO 1: DASHBOARDS ANALÍTICOS -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
-                    <i class="fa-solid fa-chart-line text-sky-400"></i>
+                    <svg class="icone text-sky-400" aria-hidden="true" focusable="false"><use href="#i-chart-line"/></svg>
                     <h3 class="text-base font-bold text-white uppercase tracking-wider text-xs">Módulos Analytics —
                         Tráfego Pago & Performance</h3>
                 </div>
@@ -123,7 +125,7 @@
                                     class="bg-sky-500/10 text-sky-400 border border-sky-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                                     dashboard/
                                 </span>
-                                <span class="text-slate-500 text-xs">14/08/2026</span>
+                                <span class="text-slate-400 text-xs">14/08/2026</span>
                             </div>
                             <h4 class="text-lg font-bold text-white group-hover:text-sky-400 transition-colors">
                                 Analytics Baseline v1.0</h4>
@@ -133,17 +135,17 @@
                             </p>
                         </div>
                         <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 font-mono">2-analytics_dashboard_v1...</span>
+                            <span class="text-[11px] text-slate-400 font-mono">2-analytics_dashboard_v1...</span>
                             <div class="flex gap-2">
                                 <a href="dashboard/2-analytics_dashboard_v1-14-08-2026.html" target="_blank"
                                     class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-all"
                                     title="Abrir em Nova Aba">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right-from-square"/></svg>
                                 </a>
                                 <button
                                     onclick="loadInViewer('dashboard/2-analytics_dashboard_v1-14-08-2026.html', 'Analytics Baseline v1.0')"
-                                    class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow transition-all flex items-center gap-2">
-                                    <i class="fa-solid fa-play"></i> Visualizar
+                                    class="px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-xs font-semibold shadow transition-all flex items-center gap-2">
+                                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Visualizar
                                 </button>
                             </div>
                         </div>
@@ -158,7 +160,7 @@
                                     class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                                     dashboard/
                                 </span>
-                                <span class="text-slate-500 text-xs">14/08/2026</span>
+                                <span class="text-slate-400 text-xs">14/08/2026</span>
                             </div>
                             <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">
                                 Analytics v2.0 & Guia Interativo</h4>
@@ -168,17 +170,17 @@
                             </p>
                         </div>
                         <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 font-mono">3-analytics_dashboard_v2...</span>
+                            <span class="text-[11px] text-slate-400 font-mono">3-analytics_dashboard_v2...</span>
                             <div class="flex gap-2">
                                 <a href="dashboard/3-analytics_dashboard_v2-14-08-2026.html" target="_blank"
                                     class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-all"
                                     title="Abrir em Nova Aba">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right-from-square"/></svg>
                                 </a>
                                 <button
                                     onclick="loadInViewer('dashboard/3-analytics_dashboard_v2-14-08-2026.html', 'Analytics v2.0 & Guia Interativo')"
                                     class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow transition-all flex items-center gap-2">
-                                    <i class="fa-solid fa-play"></i> Visualizar
+                                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Visualizar
                                 </button>
                             </div>
                         </div>
@@ -190,7 +192,7 @@
             <!-- SEÇÃO 2: KANBANS TÁTICOS -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
-                    <i class="fa-solid fa-kanban text-emerald-400"></i>
+                    <svg class="icone text-emerald-400" aria-hidden="true" focusable="false"><use href="#i-kanban"/></svg>
                     <h3 class="text-base font-bold text-white uppercase tracking-wider text-xs">Módulos de Execução —
                         Kanbans Táticos</h3>
                 </div>
@@ -206,7 +208,7 @@
                                     class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                                     kanban/
                                 </span>
-                                <span class="text-slate-500 text-xs">31/07/2026</span>
+                                <span class="text-slate-400 text-xs">31/07/2026</span>
                             </div>
                             <h4 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">
                                 Tactical Kanban OS (Semanal)</h4>
@@ -217,17 +219,17 @@
                             </p>
                         </div>
                         <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 font-mono">1-weekly_dashboard-31...</span>
+                            <span class="text-[11px] text-slate-400 font-mono">1-weekly_dashboard-31...</span>
                             <div class="flex gap-2">
                                 <a href="kanban/1-weekly_dashboard-31-07-2026.html" target="_blank"
                                     class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-all"
                                     title="Abrir em Nova Aba">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right-from-square"/></svg>
                                 </a>
                                 <button
                                     onclick="loadInViewer('kanban/1-weekly_dashboard-31-07-2026.html', 'Tactical Kanban OS (Semanal)')"
-                                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow transition-all flex items-center gap-2">
-                                    <i class="fa-solid fa-play"></i> Abrir Quadro
+                                    class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-semibold shadow transition-all flex items-center gap-2">
+                                    <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Abrir Quadro
                                 </button>
                             </div>
                         </div>
@@ -268,12 +270,12 @@
                     <a id="btn-open-external" href="#" target="_blank"
                         class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-all"
                         title="Abrir em Nova Aba">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right-from-square"/></svg>
                     </a>
                     <button onclick="reloadIframe()"
                         class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-all"
                         title="Recarregar Tela">
-                        <i class="fa-solid fa-rotate-right"></i>
+                        <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-rotate-right"/></svg>
                     </button>
                 </div>
             </div>
