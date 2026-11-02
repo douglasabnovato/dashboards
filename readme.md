@@ -4,6 +4,8 @@
 
 Sistema de gestão tática, análise de performance e simulador de tráfego pago do ecossistema **learnTECH**, com foco na BU **ByteClass**. Esta versão 2.0 reescreve a suíte HTML original em **Java**: API em Spring Boot e interface em JSF/PrimeFaces, usando os mesmos dados, fórmulas, presets e regras.
 
+> **Estado em 02/11/2026:** O GitHub Pages publica só o portal estático (`index.html`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`. Critérios em [docs/MVP.md](docs/MVP.md).
+
 ## Em produção
 
 - Web: `https://learntech-dashboards-web.onrender.com` (esperada) · API: `https://learntech-dashboards-api.onrender.com`
