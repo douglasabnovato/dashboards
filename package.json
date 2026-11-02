@@ -1,0 +1,15 @@
+{
+  "name": "dashboards-portal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "css": "tailwindcss -i assets/portal.entrada.css -o assets/portal.css --content index.html --minify",
+    "links": "node scripts/verificar-links.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "http-server": "14.1.1",
+    "tailwindcss": "3.4.17"
+  }
+}
