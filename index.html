@@ -283,7 +283,22 @@
             <!-- IFRAME EMBUTIDO -->
             <div
                 class="flex-grow bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden relative min-h-[75vh]">
-                <iframe id="hub-iframe" src="" class="w-full h-full border-0 absolute inset-0"></iframe>
+                <iframe id="hub-iframe" src="" title="Dashboard selecionado" class="w-full h-full border-0 absolute inset-0"></iframe>
+                <!-- ESTADOS DO VISUALIZADOR: carregando e erro -->
+                <div id="viewer-carregando" hidden class="absolute inset-0 bg-slate-950">
+                    <p role="status" class="h-full flex items-center justify-center text-sm text-slate-300">Carregando o dashboard…</p>
+                </div>
+                <div id="viewer-erro" hidden class="absolute inset-0 bg-slate-950">
+                    <div role="alert" class="h-full flex flex-col items-center justify-center gap-3 p-6 text-center">
+                        <p class="text-sm text-slate-100">Não foi possível abrir este dashboard. Confira a conexão e tente de novo.</p>
+                        <div class="flex gap-2">
+                            <button id="viewer-erro-tentar" type="button" onclick="reloadIframe()"
+                                class="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Tentar de novo</button>
+                            <button type="button" onclick="switchView('home')"
+                                class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Voltar ao início</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </section>
@@ -320,17 +335,46 @@
             const titleEl = document.getElementById('viewer-title');
             const extBtn = document.getElementById('btn-open-external');
 
-            iframe.src = url;
             titleEl.innerText = title;
             extBtn.href = url;
 
             switchView('viewer');
+            abrirNoIframe(url);
+        }
+
+        // CONFERE SE O ARQUIVO EXISTE ANTES DE ABRIR: mostra carregando e, se falhar, o erro
+        async function abrirNoIframe(url) {
+            const iframe = document.getElementById('hub-iframe');
+            const carregando = document.getElementById('viewer-carregando');
+            const erro = document.getElementById('viewer-erro');
+            erro.hidden = true;
+            carregando.hidden = false;
+
+            let ok = true;
+            if (location.protocol !== 'file:') {
+                try {
+                    const resposta = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+                    ok = resposta.ok;
+                } catch {
+                    ok = false;
+                }
+            }
+            if (url !== currentIframeUrl) return;
+
+            if (!ok) {
+                carregando.hidden = true;
+                iframe.removeAttribute('src');
+                erro.hidden = false;
+                document.getElementById('viewer-erro-tentar').focus();
+                return;
+            }
+            iframe.onload = () => { carregando.hidden = true; };
+            iframe.src = url;
         }
 
         function reloadIframe() {
-            const iframe = document.getElementById('hub-iframe');
             if (currentIframeUrl) {
-                iframe.src = currentIframeUrl;
+                abrirNoIframe(currentIframeUrl);
             }
         }
     </script>
