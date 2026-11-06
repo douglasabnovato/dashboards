@@ -25,7 +25,7 @@
 | 11 | Testes dos fluxos críticos | Testes automatizados no CI | Atende: testes Java e 3 testes Playwright no CI |
 | 12 | Documentação honesta | Qualquer pessoa roda o projeto, e os números estão certos | Atende: README diz o que está publicado e o que não está |
 
-**Resultado:** 1 de 12 critérios atendidos por inteiro. É um julgamento técnico.
+**Resultado em 31/10/2026:** 7 de 12 atendidos (1, 2, 4, 7, 8, 11 e 12). O texto anterior dizia 1 de 12 e não batia com a tabela; corrigido em 06/11/2026.
 
 ## 2. Tarefas
 
@@ -47,3 +47,19 @@ Integração direta com Meta Ads e CRM. A lista é uma proposta e pode mudar com
 **Medição:** Lighthouse 12.8.2 local, móvel, 3 execuções no site publicado. Portal: LCP 1,09 / 0,96 / 1,12 s (mediana 1,09 s; era 3,2 s), acessibilidade 100. A versão Java não está publicada e não foi medida. O resultado varia entre execuções, e não houve teste em celular real.
 
 **Critério 5:** segue sem atender, porque nada coleta uso; depende de uma conta de medição do responsável.
+
+## Revisão de 06/11/2026 (ciclo de 03/11/2026)
+
+**Nível:** Estudo (N1). Os critérios 5 (medição) e 7 (desempenho no ar) passam a "Não se aplica (N1)" e saem da conta. **Resumo:** 7 de 10 aplicáveis atendidos (1, 2, 4, 6, 8, 11 e 12) e 3 parciais (3, 9 e 10). **Finalizado:** não.
+
+| # | Situação em 06/11/2026 | Evidência ou o que falta | Issue |
+|---|---|---|---|
+| 3 | Parcial | O portal funciona no GitHub Pages (200); a versão Java não está publicada (Render 404) | #10 |
+| 5 | Não se aplica (N1) | Projeto de estudo | — |
+| 6 | Atende | O visualizador mostra "Carregando o dashboard…" e, se o arquivo não abrir, um erro com "Tentar de novo" e "Voltar ao início" (teste em `tests/portal.spec.mjs`) | — |
+| 7 | Não se aplica (N1) | LCP do portal de 1,09 s em 02/11/2026, só como registro | — |
+| 9 | Parcial | Login só na versão Java, que não está no ar | #10 |
+| 10 | Parcial | `main` sem proteção (decisão 3 do processo) | #9 |
+| 12 | Atende | README diz que só o portal está no ar | — |
+
+**Para "Finalizado":** os critérios 3, 9 e 10 dependem do responsável, e cada um tem issue aberta com `depende-do-responsavel` (#9, #10). Quando a #10 for decidida, os critérios 3 e 9 podem fechar.
