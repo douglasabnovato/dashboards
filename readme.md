@@ -6,9 +6,32 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 
 > **Estado em 02/11/2026:** O GitHub Pages publica só o portal estático (`index.html`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`. Critérios em [docs/MVP.md](docs/MVP.md).
 
+## Estado e próximos passos (ciclo de 03/11/2026)
+
+**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 06/11/2026. A versão Java não está publicada: o endereço do Render respondeu 404 (#10).
+
+**O que foi feito**
+- O visualizador mostra "Carregando" e, se o dashboard não abrir, um erro com "Tentar de novo" e "Voltar ao início", com 2 testes novos (PR deste ciclo para a `developer/sprint-2026-11-12`).
+- O iframe ganhou título para leitores de tela.
+- Playwright 1.65.0, que instala o Chromium no `ubuntu-latest` atual.
+- O resumo do [`docs/MVP.md`](docs/MVP.md) agora bate com a tabela e segue a régua N1.
+- Antes: CDNs tirados do portal e testes Playwright (#4).
+
+**O que queremos fazer**
+- #9 Proteger a `main` com PR e CI obrigatórios (responsável).
+- #10 Decidir a publicação da versão Java no Render (responsável).
+- #11 Padronizar as fórmulas de ROAS, CPA e CAC.
+- #12 Rodar o axe no CI do portal.
+- #13 Percorrer os dashboards do visualizador por teclado.
+
+**Onde está a documentação**
+- Estado dos critérios: [`docs/MVP.md`](docs/MVP.md)
+- Plano do ciclo: [`docs/PLANO-DE-ACAO.md`](docs/PLANO-DE-ACAO.md)
+
 ## Em produção
 
-- Web: `https://learntech-dashboards-web.onrender.com` (esperada) · API: `https://learntech-dashboards-api.onrender.com`
+- Portal (GitHub Pages): https://douglasabnovato.github.io/dashboards/
+- Versão Java, **não publicada** (404 em 06/11/2026; #10): web `learntech-dashboards-web.onrender.com` e API `learntech-dashboards-api.onrender.com`, se a publicação for feita.
 - Hospedagem gratuita: Render (2 serviços Docker, `render.yaml`) + Neon (PostgreSQL).
 - Passo a passo, ordem segura e checagens: [docs/DEPLOY.md](docs/DEPLOY.md).
 
