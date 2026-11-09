@@ -6,23 +6,25 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 
 > **Estado em 02/11/2026:** O GitHub Pages publica só o portal estático (`index.html`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`. Critérios em [docs/MVP.md](docs/MVP.md).
 
-## Estado e próximos passos (ciclo de 03/11/2026)
+## Estado e próximos passos (ciclo de 07/11/2026)
 
-**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 06/11/2026. A versão Java não está publicada: o endereço do Render respondeu 404 (#10).
+**Estado:** Estudo (N1), 7 de 10 critérios aplicáveis atendidos; **Finalizado: sim**, porque os 3 parciais dependem do responsável. Detalhes em [`docs/MVP.md`](docs/MVP.md).
 
-**O que foi feito**
-- O visualizador mostra "Carregando" e, se o dashboard não abrir, um erro com "Tentar de novo" e "Voltar ao início", com 2 testes novos (PR deste ciclo para a `developer/sprint-2026-11-12`).
-- O iframe ganhou título para leitores de tela.
-- Playwright 1.65.0, que instala o Chromium no `ubuntu-latest` atual.
-- O resumo do [`docs/MVP.md`](docs/MVP.md) agora bate com a tabela e segue a régua N1.
-- Antes: CDNs tirados do portal e testes Playwright (#4).
+**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 09/11/2026, igual à `main`. A versão Java não está publicada (#10).
 
-**O que queremos fazer**
+**O que foi feito neste ciclo** (PR para a `developer/sprint-2026-11-12`; a `main` espera a revisão do responsável)
+- Teste de acessibilidade no CI (`tests/acessibilidade.spec.mjs`): axe no portal em modo claro e escuro e nos 3 dashboards, e uso só com teclado (#12, #13).
+- Corrigido o que o teste achou: seletor do visualizador sem nome, sliders do simulador sem rótulo, contraste baixo em textos e filtros, colunas do Kanban sem acesso por teclado.
+- [`docs/MVP.md`](docs/MVP.md) com uma tabela só, a atual; as anteriores foram para "Histórico".
+
+**Ciclo anterior (03/11/2026):** estados de carregando e erro no visualizador e Playwright 1.65.
+
+**Próximos passos**
 - #9 Proteger a `main` com PR e CI obrigatórios (responsável).
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
-- #12 Rodar o axe no CI do portal.
-- #13 Percorrer os dashboards do visualizador por teclado.
+- #16 Zerar as violações moderadas do axe nos dashboards antigos.
+- #17 Tirar o Tailwind Play CDN dos dashboards antigos.
 
 **Onde está a documentação**
 - Estado dos critérios: [`docs/MVP.md`](docs/MVP.md)

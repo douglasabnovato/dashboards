@@ -121,7 +121,7 @@
                     <span class="text-[10px] text-slate-400 uppercase">WIP Limit Global</span>
                     <div class="flex items-center gap-2">
                         <span id="wip-counter" class="text-sm font-bold text-emerald-400">0</span>
-                        <span class="text-xs text-slate-500">/ 1 Ativa</span>
+                        <span class="text-xs text-slate-400">/ 1 Ativa</span>
                     </div>
                 </div>
                 <div class="h-8 w-px bg-slate-700"></div>
@@ -158,7 +158,7 @@
 
         <!-- Filters row 2: Dia da semana -->
         <div class="flex gap-2 overflow-x-auto custom-scroll w-full pb-1 shrink-0" id="day-filter-container">
-            <span class="text-[10px] text-slate-500 uppercase self-center pr-1 whitespace-nowrap"><i
+            <span class="text-[10px] text-slate-400 uppercase self-center pr-1 whitespace-nowrap"><i
                     class="fa-regular fa-calendar mr-1"></i>Dia:</span>
             <button onclick="setDayFilter('all')"
                 class="day-filter-btn active px-3 py-1 rounded-full border border-slate-700 bg-slate-800 text-[11px] font-semibold text-white whitespace-nowrap"
@@ -195,7 +195,7 @@
                     <span
                         class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
                 </div>
-                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="0"></div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" tabindex="0" role="region" aria-label="Coluna Backlog Geral" data-stage="0"></div>
             </div>
 
             <div class="flex-shrink-0 w-72 bg-slate-900/50 border border-slate-800 rounded-xl flex flex-col max-h-full">
@@ -206,7 +206,7 @@
                     <span
                         class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
                 </div>
-                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="1"></div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" tabindex="0" role="region" aria-label="Coluna To-Do (Semana)" data-stage="1"></div>
             </div>
 
             <div class="flex-shrink-0 w-72 bg-slate-900/80 border-2 border-indigo-900/30 rounded-xl flex flex-col max-h-full shadow-lg relative"
@@ -222,7 +222,7 @@
                         class="text-[10px] bg-indigo-900/50 text-indigo-200 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
                 </div>
                 <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2 min-h-[150px]"
-                    data-stage="2"></div>
+                    tabindex="0" role="region" aria-label="Coluna Doing" data-stage="2"></div>
             </div>
 
             <div class="flex-shrink-0 w-72 bg-slate-900/50 border border-slate-800 rounded-xl flex flex-col max-h-full">
@@ -233,7 +233,7 @@
                     <span
                         class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
                 </div>
-                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="3"></div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" tabindex="0" role="region" aria-label="Coluna QA / Testes" data-stage="3"></div>
             </div>
 
             <div
@@ -245,7 +245,7 @@
                     <span
                         class="text-[10px] bg-emerald-900/30 text-emerald-400 px-2 py-0.5 rounded-full font-mono count-badge">0</span>
                 </div>
-                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" data-stage="4"></div>
+                <div class="p-2 flex-grow overflow-y-auto custom-scroll kanban-col space-y-2" tabindex="0" role="region" aria-label="Coluna Concluído" data-stage="4"></div>
             </div>
 
         </div>
@@ -359,7 +359,9 @@
         function setFilter(filter) {
             currentFilter = filter;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.style.opacity = (btn.dataset.target === filter) ? '1' : '0.5';
+                /* Inativo um pouco apagado, mas com contraste de 4,5:1; o estado vai para leitores de tela */
+                btn.style.opacity = (btn.dataset.target === filter) ? '1' : '0.85';
+                btn.setAttribute('aria-pressed', String(btn.dataset.target === filter));
             });
             renderBoard();
         }
@@ -367,7 +369,9 @@
         function setDayFilter(day) {
             currentDayFilter = day;
             document.querySelectorAll('.day-filter-btn').forEach(btn => {
-                btn.style.opacity = (btn.dataset.target === day) ? '1' : '0.5';
+                /* Inativo um pouco apagado, mas com contraste de 4,5:1; o estado vai para leitores de tela */
+                btn.style.opacity = (btn.dataset.target === day) ? '1' : '0.85';
+                btn.setAttribute('aria-pressed', String(btn.dataset.target === day));
             });
             renderBoard();
         }
@@ -419,7 +423,7 @@
                 <div class="task-card bg-slate-800 border border-slate-700 p-3 rounded-lg flex flex-col gap-2 color-${task.project} hover:bg-slate-700/80 group"
                      draggable="true" data-id="${task.id}" style="border-left-width: 3px;">
                     <div class="flex justify-between items-start gap-2">
-                        <h4 class="text-xs font-semibold text-slate-200 leading-snug ${isDone ? 'line-through text-slate-500' : ''}">${task.title}</h4>
+                        <h4 class="text-xs font-semibold text-slate-200 leading-snug ${isDone ? 'line-through text-slate-400' : ''}">${task.title}</h4>
                         <i class="fa-solid ${meta.icon} text-[10px] opacity-70 mt-0.5" title="${meta.name}"></i>
                     </div>
                     <p class="text-[10px] text-slate-400 leading-relaxed line-clamp-2">${task.desc}</p>
