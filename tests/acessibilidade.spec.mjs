@@ -8,8 +8,7 @@ const DASHBOARDS = [
   { url: 'kanban/1-weekly_dashboard-31-07-2026.html', controles: ['Coluna Backlog Geral', 'Coluna Concluído'] },
 ];
 
-/* Os dashboards usam o Tailwind e o Chart.js por CDN; sem rede, a página fica sem estilo e o teste perde sentido */
-const semRedeExterna = (url) => !url.startsWith('http://127.0.0.1');
+/* Os dashboards usam o Tailwind e o Chart.js por CDN (#17): estes testes precisam de rede */
 
 /* Percorre a página com Tab e devolve, para cada parada, id ou nome, se tem nome acessível e se o foco aparece */
 async function percorrerComTab(page, limite = 80) {
@@ -19,11 +18,19 @@ async function percorrerComTab(page, limite = 80) {
     const info = await page.evaluate(() => {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
+      /* Foco visível: o contorno ou a sombra mudam entre o elemento focado e o mesmo elemento sem foco */
+      const marca = (cs) => `${cs.outlineStyle}|${cs.outlineWidth}|${cs.outlineColor}|${cs.boxShadow}|${cs.borderColor}`;
+      const comFoco = marca(getComputedStyle(el));
       const cs = getComputedStyle(el);
-      const contorno = cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0;
-      const nome = (el.getAttribute('aria-label') || el.getAttribute('title') || el.innerText || '').trim()
-        || (el.getAttribute('aria-labelledby') && document.getElementById(el.getAttribute('aria-labelledby'))?.innerText.trim()) || '';
-      return { chave: el.id || el.getAttribute('aria-label') || el.outerHTML.slice(0, 80), nome, foco: contorno || cs.boxShadow !== 'none' };
+      const temIndicador = (cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0) || cs.boxShadow !== 'none';
+      el.blur();
+      const semFoco = marca(getComputedStyle(el));
+      el.focus();
+      /* Nome acessível: aria-label, aria-labelledby, label ou title; texto interno só fora de campos de formulário */
+      const porId = el.getAttribute('aria-labelledby')?.split(' ').map((id) => document.getElementById(id)?.innerText ?? '').join(' ');
+      const campo = ['SELECT', 'INPUT', 'TEXTAREA'].includes(el.tagName);
+      const nome = (el.getAttribute('aria-label') || porId || (el.labels?.[0]?.innerText ?? '') || el.getAttribute('title') || (campo ? '' : el.innerText) || '').trim();
+      return { chave: el.id || el.getAttribute('aria-label') || el.outerHTML.slice(0, 80), nome, foco: temIndicador && comFoco !== semFoco };
     });
     if (!info || paradas.some((p) => p.chave === info.chave && p.nome === info.nome)) break;
     paradas.push(info);
@@ -55,7 +62,21 @@ for (const { url, controles } of DASHBOARDS) {
     const graves = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => ['serious', 'critical'].includes(v.impact));
     expect(graves.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
 
-    if (url.includes('3-analytics')) await page.locator('#btn-mode-sim').click();
+    /* No Analytics v2 o simulador começa oculto: roda o axe de novo com ele aberto */
+    if (url.includes('3-analytics')) {
+      await page.locator('#btn-mode-sim').click();
+      const gravesSim = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => ['serious', 'critical'].includes(v.impact));
+      expect(gravesSim.map((v) => v.id)).toEqual([]);
+    }
+    /* No Kanban, troca o filtro para conferir o contraste dos filtros inativos e o aria-pressed */
+    if (url.includes('kanban')) {
+      await page.getByRole('button', { name: /A - MedTrem/ }).click();
+      await expect(page.getByRole('button', { name: /A - MedTrem/ })).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('button', { name: 'All Projects' })).toHaveAttribute('aria-pressed', 'false');
+      const gravesFiltro = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => ['serious', 'critical'].includes(v.impact));
+      expect(gravesFiltro.map((v) => v.id)).toEqual([]);
+      await page.getByRole('button', { name: 'All Projects' }).click();
+    }
     await page.locator('body').click({ position: { x: 1, y: 1 } });
     const paradas = await percorrerComTab(page);
     const chaves = paradas.map((p) => p.chave);
