@@ -8,7 +8,7 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 
 ## Estado e próximos passos (ciclo de 07/11/2026)
 
-**Estado:** Estudo (N1), 7 de 10 critérios aplicáveis atendidos; **Finalizado: sim**, porque os 3 parciais dependem do responsável. Detalhes em [`docs/MVP.md`](docs/MVP.md).
+**Estado:** Estudo (N1), 8 de 10 critérios aplicáveis atendidos; **Finalizado: sim**, porque os 2 parciais dependem do responsável. A `main` está protegida desde 10/11/2026 (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
 
 **No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 09/11/2026, igual à `main`. A versão Java não está publicada (#10).
 
@@ -20,7 +20,7 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 **Ciclo anterior (03/11/2026):** estados de carregando e erro no visualizador e Playwright 1.65.
 
 **Próximos passos**
-- #9 Proteger a `main` com PR e CI obrigatórios (responsável).
+- #9 Proteger a `main`: feito em 10/11/2026; a issue fecha no merge da `main`.
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
 - #16 Zerar as violações moderadas do axe nos dashboards antigos.
