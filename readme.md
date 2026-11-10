@@ -6,23 +6,24 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 
 > **Estado em 02/11/2026:** O GitHub Pages publica só o portal estático (`index.html`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`. Critérios em [docs/MVP.md](docs/MVP.md).
 
-## Estado e próximos passos (ciclo de 03/11/2026)
+## Estado e próximos passos (ciclo da faixa de 90%, 10/11/2026)
 
-**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 06/11/2026. A versão Java não está publicada: o endereço do Render respondeu 404 (#10).
+**Estado:** Estudo (N1), 10 de 10 critérios aplicáveis atendidos; **Finalizado: sim**. A `main` exige PR e os jobs `build` e `portal` do CI verdes (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
 
-**O que foi feito**
-- O visualizador mostra "Carregando" e, se o dashboard não abrir, um erro com "Tentar de novo" e "Voltar ao início", com 2 testes novos (PR deste ciclo para a `developer/sprint-2026-11-12`).
-- O iframe ganhou título para leitores de tela.
-- Playwright 1.65.0, que instala o Chromium no `ubuntu-latest` atual.
-- O resumo do [`docs/MVP.md`](docs/MVP.md) agora bate com a tabela e segue a régua N1.
-- Antes: CDNs tirados do portal e testes Playwright (#4).
+**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 10/11/2026. A versão Java não está publicada; é estudo local até a decisão da #10.
 
-**O que queremos fazer**
-- #9 Proteger a `main` com PR e CI obrigatórios (responsável).
+**O que foi feito neste ciclo** (PR #22 para a `developer/sprint-2026-11-12`; a `main` espera a revisão do responsável)
+- Números dos dashboards marcados como ilustrativos no portal, no visualizador e nos dashboards de Analytics, com teste.
+- Critérios 2, 3, 9 e 10 revistos pelas decisões D1 a D4 do ciclo.
+
+**Ciclos anteriores:** axe e teclado no CI (07/11/2026); carregando e erro no visualizador (03/11/2026).
+
+**Próximos passos**
+- #19 Mesclar a sprint na `main` (responsável).
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
-- #12 Rodar o axe no CI do portal.
-- #13 Percorrer os dashboards do visualizador por teclado.
+- #16 Zerar as violações moderadas do axe nos dashboards antigos.
+- #17 Tirar o Tailwind Play CDN dos dashboards antigos.
 
 **Onde está a documentação**
 - Estado dos critérios: [`docs/MVP.md`](docs/MVP.md)
