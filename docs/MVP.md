@@ -4,11 +4,11 @@
 
 **Nível:** Estudo (N1). Os critérios 5 e 7 são "Não se aplica (N1)" e saem da conta.
 
-**Resumo:** 7 de 10 aplicáveis atendidos (1, 2, 4, 6, 8, 11 e 12). Os 3 parciais (3, 9 e 10) dependem do responsável.
+**Resumo:** 8 de 10 aplicáveis atendidos (1, 2, 4, 6, 8, 10, 11 e 12). Os 2 parciais (3 e 9) dependem do responsável.
 
-**Finalizado:** sim (os critérios que o código resolve estão em "Atende"; 3, 9 e 10 têm issue com `depende-do-responsavel`: #9 e #10).
+**Finalizado:** sim (os critérios que o código resolve estão em "Atende"; 3 e 9 têm issue com `depende-do-responsavel`: #10).
 
-## Critérios em 09/11/2026 (ciclo de 07/11/2026)
+## Critérios em 10/11/2026 (ciclo de 07/11/2026)
 
 | # | Critério | Situação | Evidência (comando, data, resultado) ou o que falta | Issue |
 |---|---|---|---|---|
@@ -21,7 +21,7 @@
 | 7 | Desempenho aceitável | Não se aplica (N1) | LCP do portal de 1,09 s em 02/11/2026, só como registro | — |
 | 8 | Acessibilidade básica | Atende | `npx playwright test acessibilidade`, 09/11/2026: 6 testes passam. axe sem violações no portal em modo claro e escuro (início, visualizador e erro); axe sem violação séria ou crítica nos 3 dashboards; em cada dashboard, todo controle alcançado por Tab tem nome e foco visível; no visualizador, Tab entra no dashboard e Shift+Tab volta à barra. Violações moderadas restantes na #16 | #16 |
 | 9 | Segurança e conformidade | Parcial | Portal estático, sem dado pessoal. O login existe só na versão Java, que não está no ar | #10 |
-| 10 | Entrega confiável | Parcial | CI verde em PR; `main` sem proteção | #9 |
+| 10 | Entrega confiável | Atende | `gh api repos/douglasabnovato/dashboards/rulesets`, 10/11/2026: ruleset `principal-protegida` ativo (exige PR, bloqueia force push e exclusão); o workflow `ci` (jobs `build` e `portal`) roda em todo PR | #9 |
 | 11 | Testes dos fluxos críticos | Atende | `mvn -B verify` (core, api e web) e 11 testes Playwright do portal no CI | — |
 | 12 | Documentação honesta | Atende | README diz que só o portal está no ar; uma tabela só, resumo batendo com ela | — |
 
@@ -42,7 +42,6 @@ Lista de cada parada do Tab conferida por `tests/acessibilidade.spec.mjs`: todas
 ## Próximas tarefas
 
 - Decidir publicar no Render e no Neon ou manter como estudo (responsável, #10).
-- Proteger a `main` (responsável, #9).
 - Padronizar as fórmulas de ROAS, CPA e CAC (#11); violações moderadas do axe (#16); tirar o Tailwind Play CDN dos dashboards (#17).
 
 ## Fora do MVP
