@@ -75,6 +75,23 @@ Timebox do ciclo: 2 h.
 
 **Vira issue.** #9 e #10 (responsável); #11, #12 e #13 (agente).
 
+## Ciclo de 10/11/2026 (faixa de 90%)
+
+> Branch `feature/2026-11-10-b` → `developer/sprint-2026-11-12` → `main` (o PR para a `main` fica com o responsável). Decisões D1 a D7 em `engenharia/decisoes/2026-11-10-ciclo-faixa-90.md`.
+
+**Produto.** Sem mudança de problema e público. A meta da hipótese passa a ser a do ciclo (D1).
+
+**Engenharia.** Portal estático no Pages com testes Playwright no CI. Risco tratado: o card do Analytics v1 dizia "dados auditados" e "indicadores reais" sem confirmação; agora os números aparecem como ilustrativos (D4), com teste.
+
+**Plano de ação.**
+
+| Item | Destino |
+|---|---|
+| Aviso de números ilustrativos, com teste | Este ciclo |
+| Critérios 2, 3, 9 e 10 pelas decisões D1 a D4 | Este ciclo |
+| Publicar a versão Java | Responsável (#10) |
+| Fórmulas, axe moderado, Tailwind CDN | #11, #16, #17 |
+
 ## Ciclo de 07/11/2026
 
 > Executado em 09/11/2026. Branch `feature/2026-11-07` → `developer/sprint-2026-11-12` → `main` (o PR para a `main` fica com o responsável). Nível: Estudo (N1), 10 critérios aplicáveis.
