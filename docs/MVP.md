@@ -4,11 +4,61 @@
 
 **Nível:** Estudo (N1). Os critérios 5 e 7 são "Não se aplica (N1)" e saem da conta.
 
+**Resumo:** 10 de 10 aplicáveis atendidos.
+
+**Finalizado:** sim. Falta só o merge da sprint na `main`, que é do responsável (#19). A publicação da versão Java segue como decisão dele (#10), fora do MVP.
+
+## Critérios em 10/11/2026 (ciclo da faixa de 90%)
+
+Decisões D1 a D7 em `engenharia/decisoes/2026-11-10-ciclo-faixa-90.md`. A versão Java (API e web) é estudo local até o responsável decidir a #10; os critérios 3 e 9 contam o portal, que é o que está no ar.
+
+| # | Critério | Situação | Evidência (comando, data, resultado) ou o que falta | Issue |
+|---|---|---|---|---|
+| 1 | Problema e público claros | Atende | Uma frase, em "Problema e hipótese" abaixo | — |
+| 2 | Hipótese a validar | Atende | Meta decidida pelo coordenador em 10/11/2026 (decisão D1), revisável pelo responsável: achar o dashboard certo em menos de 2 cliques | — |
+| 3 | Fluxo principal completo | Atende | Decisão D2. `npx playwright test`, 10/11/2026: 12 testes passam (abrir o portal, escolher um dashboard, usar o visualizador, trocar pelo seletor, erro e "Tentar de novo", voltar). Os mesmos testes rodam no job `portal` do CI (PR #22). `curl` em https://douglasabnovato.github.io/dashboards/, 10/11/2026: 200 | — |
+| 4 | Escopo enxuto | Atende | "Fora do MVP" abaixo | — |
+| 5 | Medição de uso | Não se aplica (N1) | Projeto de estudo | — |
+| 6 | Falhas tratadas | Atende | Visualizador com "Carregando o dashboard…" e erro com "Tentar de novo" e "Voltar ao início" (`tests/portal.spec.mjs`) | — |
+| 7 | Desempenho aceitável | Não se aplica (N1) | LCP do portal de 1,09 s em 02/11/2026, só como registro | — |
+| 8 | Acessibilidade básica | Atende | `npx playwright test`, 10/11/2026: axe sem violações no portal em modo claro e escuro (início, visualizador e erro); axe sem violação séria ou crítica nos 3 dashboards; todo controle alcançado por Tab tem nome e foco visível; no visualizador, Tab entra no dashboard e Shift+Tab volta à barra. Violações moderadas restantes na #16 | #16 |
+| 9 | Segurança e conformidade | Atende | `npm audit --omit=dev`, 10/11/2026: 0 vulnerabilidades. Dependabot pela API, 10/11/2026: desligado (403), então o `npm audit` é a fonte. Sem segredo no código: senhas e chaves só por variável (`.env.example` só com nomes). Portal estático, sem dado pessoal; os dados da migração `V2__dados_originais.sql` são métricas e tarefas, sem nome nem e-mail. Números dos dashboards marcados como ilustrativos na tela (decisão D4), com teste em `tests/portal.spec.mjs` | — |
+| 10 | Entrega confiável | Atende | `gh api repos/douglasabnovato/dashboards/rules/branches/main`, 10/11/2026: `deletion`, `non_fast_forward`, `pull_request` e `required_status_checks` com os jobs `build` e `portal` (decisão D3) | #9 |
+| 11 | Testes dos fluxos críticos | Atende | `mvn -B verify` (core, api e web) no job `build` e 12 testes Playwright no job `portal`, sem `skip` | — |
+| 12 | Documentação honesta | Atende | README diz que só o portal está no ar; uma tabela só, resumo batendo com ela | — |
+
+### Teclado nos dashboards (09/11/2026, Playwright local, Chromium)
+
+Lista de cada parada do Tab conferida por `tests/acessibilidade.spec.mjs`: todas com nome acessível e foco visível.
+
+- **Analytics v1:** botões "Histórico Real" e "Simulador de Cenários" e os 4 filtros de fase.
+- **Analytics v2:** abas "Dashboard & Simulador" e "Guia", modos, 3 presets, 4 filtros de fase e os 4 sliders do simulador (agora com nome).
+- **Kanban semanal:** "Reset", filtros de projeto e de dia (com `aria-pressed`), as 5 colunas (roláveis por teclado) e os cartões com "Puxar".
+
+## Problema e hipótese
+
+**Problema e público:** Quem gere tráfego pago analisa KPIs, simula o funil e executa tarefas no mesmo lugar.
+
+**Hipótese (meta decidida pelo coordenador em 10/11/2026, decisão D1, revisável):** Se Analisar, Decidir e Executar ficarem em um só portal, a pessoa acha o dashboard certo em menos de 2 cliques.
+
+## Próximas tarefas
+
+- Decidir publicar no Render e no Neon ou manter como estudo (responsável, #10).
+- Padronizar as fórmulas de ROAS, CPA e CAC (#11); violações moderadas do axe (#16); tirar o Tailwind Play CDN dos dashboards (#17).
+
+## Fora do MVP
+
+Integração direta com Meta Ads e CRM, e publicação da versão Java até o responsável decidir.
+
+## Histórico
+
+### Tabela de 10/11/2026, antes do ciclo da faixa de 90% (ciclo de 07/11/2026)
+
 **Resumo:** 8 de 10 aplicáveis atendidos (1, 2, 4, 6, 8, 10, 11 e 12). Os 2 parciais (3 e 9) dependem do responsável.
 
 **Finalizado:** sim (os critérios que o código resolve estão em "Atende"; 3 e 9 têm issue com `depende-do-responsavel`: #10).
 
-## Critérios em 10/11/2026 (ciclo de 07/11/2026)
+### Critérios em 10/11/2026 (ciclo de 07/11/2026)
 
 | # | Critério | Situação | Evidência (comando, data, resultado) ou o que falta | Issue |
 |---|---|---|---|---|
@@ -25,30 +75,13 @@
 | 11 | Testes dos fluxos críticos | Atende | `mvn -B verify` (core, api e web) e 11 testes Playwright do portal no CI | — |
 | 12 | Documentação honesta | Atende | README diz que só o portal está no ar; uma tabela só, resumo batendo com ela | — |
 
-### Teclado nos dashboards (09/11/2026, Playwright local, Chromium)
+#### Teclado nos dashboards (09/11/2026, Playwright local, Chromium)
 
 Lista de cada parada do Tab conferida por `tests/acessibilidade.spec.mjs`: todas com nome acessível e foco visível.
 
 - **Analytics v1:** botões "Histórico Real" e "Simulador de Cenários" e os 4 filtros de fase.
 - **Analytics v2:** abas "Dashboard & Simulador" e "Guia", modos, 3 presets, 4 filtros de fase e os 4 sliders do simulador (agora com nome).
 - **Kanban semanal:** "Reset", filtros de projeto e de dia (com `aria-pressed`), as 5 colunas (roláveis por teclado) e os cartões com "Puxar".
-
-## Problema e hipótese
-
-**Problema e público:** Quem gere tráfego pago analisa KPIs, simula o funil e executa tarefas no mesmo lugar.
-
-**Hipótese (proposta, sem validação):** Se Analisar, Decidir e Executar ficarem em um só portal, a pessoa acha o dashboard certo em menos de 2 cliques.
-
-## Próximas tarefas
-
-- Decidir publicar no Render e no Neon ou manter como estudo (responsável, #10).
-- Padronizar as fórmulas de ROAS, CPA e CAC (#11); violações moderadas do axe (#16); tirar o Tailwind Play CDN dos dashboards (#17).
-
-## Fora do MVP
-
-Integração direta com Meta Ads e CRM, e publicação da versão Java até o responsável decidir.
-
-## Histórico
 
 ### Revisão de 06/11/2026 (ciclo de 03/11/2026)
 

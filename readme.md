@@ -6,21 +6,20 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 
 > **Estado em 02/11/2026:** O GitHub Pages publica só o portal estático (`index.html`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`. Critérios em [docs/MVP.md](docs/MVP.md).
 
-## Estado e próximos passos (ciclo de 07/11/2026)
+## Estado e próximos passos (ciclo da faixa de 90%, 10/11/2026)
 
-**Estado:** Estudo (N1), 8 de 10 critérios aplicáveis atendidos; **Finalizado: sim**, porque os 2 parciais dependem do responsável. A `main` está protegida desde 10/11/2026 (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
+**Estado:** Estudo (N1), 10 de 10 critérios aplicáveis atendidos; **Finalizado: sim**. A `main` exige PR e os jobs `build` e `portal` do CI verdes (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
 
-**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 09/11/2026, igual à `main`. A versão Java não está publicada (#10).
+**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 10/11/2026. A versão Java não está publicada; é estudo local até a decisão da #10.
 
-**O que foi feito neste ciclo** (PR para a `developer/sprint-2026-11-12`; a `main` espera a revisão do responsável)
-- Teste de acessibilidade no CI (`tests/acessibilidade.spec.mjs`): axe no portal em modo claro e escuro e nos 3 dashboards, e uso só com teclado (#12, #13).
-- Corrigido o que o teste achou: seletor do visualizador sem nome, sliders do simulador sem rótulo, contraste baixo em textos e filtros, colunas do Kanban sem acesso por teclado.
-- [`docs/MVP.md`](docs/MVP.md) com uma tabela só, a atual; as anteriores foram para "Histórico".
+**O que foi feito neste ciclo** (PR #22 para a `developer/sprint-2026-11-12`; a `main` espera a revisão do responsável)
+- Números dos dashboards marcados como ilustrativos no portal, no visualizador e nos dashboards de Analytics, com teste.
+- Critérios 2, 3, 9 e 10 revistos pelas decisões D1 a D4 do ciclo.
 
-**Ciclo anterior (03/11/2026):** estados de carregando e erro no visualizador e Playwright 1.65.
+**Ciclos anteriores:** axe e teclado no CI (07/11/2026); carregando e erro no visualizador (03/11/2026).
 
 **Próximos passos**
-- #9 Proteger a `main`: feito em 10/11/2026; a issue fecha no merge da `main`.
+- #19 Mesclar a sprint na `main` (responsável).
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
 - #16 Zerar as violações moderadas do axe nos dashboards antigos.
