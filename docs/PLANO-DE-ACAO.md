@@ -57,7 +57,7 @@ Timebox do ciclo: 2 h.
 **Riscos.**
 - Os dashboards ainda pedem o Tailwind e o Chart.js por CDN (#17): os testes deles precisam de rede.
 - Sem os alertas do Dependabot, só o `npm audit` olha as dependências do portal; o Maven fica sem alerta.
-- Teste do erro com "Tentar de novo" falhou 1 vez em 3 rodadas locais com a máquina carregada e passou sozinho; o CI decide.
+- Teste do erro com "Tentar de novo": `npx playwright test`, 16/11/2026, falhou 1 vez em 3 rodadas locais com a máquina carregada e passou sozinho; o CI decide, e a estabilidade virou a #26.
 
 **Qualidade.**
 - Testes: 13 testes Playwright (eram 12). O axe dos dashboards passa a barrar também as violações moderadas.

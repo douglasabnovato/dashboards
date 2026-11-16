@@ -69,7 +69,7 @@ Nenhum código Java foi alterado.
 
 Branch: **main**.
 
-### Etapa 1 · Validar localmente (concluída pelo CI)
+### Etapa 1 · Validar o build (concluída no CI; rodar local é opcional)
 
 Situação em 16/11/2026: o job `build` do CI roda `mvn -B verify` (core, api e web) e passa, com `Skipped: 0` (run [43799414312](https://github.com/douglasabnovato/dashboards/actions/runs/43799414312)). O registro abaixo, de 27/09/2026, fica como histórico. Para rodar na sua máquina, siga os passos.
 

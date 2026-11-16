@@ -4,7 +4,7 @@
 
 Sistema de gestão tática, análise de performance e simulador de tráfego pago do ecossistema **learnTECH**, com foco na BU **ByteClass**. Esta versão 2.0 reescreve a suíte HTML original em **Java**: API em Spring Boot e interface em JSF/PrimeFaces, usando os mesmos dados, fórmulas, presets e regras.
 
-> **Estado em 16/11/2026:** O GitHub Pages publica só o portal estático (`index.html`), no modo legado (branch `main`, pasta `/`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test` (porta 4173; outra com `PORTA_PORTAL=4791 npm test`). Critérios em [docs/MVP.md](docs/MVP.md).
+> **Estado em 16/11/2026:** O GitHub Pages publica só o portal estático (`index.html`), no modo legado (branch `main`, pasta `/`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`, com Node 22.12 ou mais novo (porta 4173; outra porta com `PORTA_PORTAL=4791 npm test` no Bash ou `$env:PORTA_PORTAL=4791; npm test` no PowerShell). Critérios em [docs/MVP.md](docs/MVP.md).
 
 ## Estado e próximos passos (ciclo de 16/11/2026)
 
