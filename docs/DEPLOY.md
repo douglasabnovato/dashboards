@@ -2,7 +2,22 @@
 
 Plano de ação para publicar a versão Java (API Spring Boot + Web JSF/PrimeFaces) em hospedagem gratuita, sem tirar do ar a versão HTML antes da hora.
 
-> **Status: BLOQUEADO na Etapa 1.** O `mvn verify` completo ainda não rodou em lugar nenhum. Nada deste guia deve ir além da Etapa 1 até o build ficar verde na sua máquina.
+> **Estado em 16/11/2026.** O portal estático está no ar pelo GitHub Pages (seção 0). A versão Java não está publicada: as Etapas 1 e 2 estão concluídas (o CI roda o `mvn -B verify` verde, run [43799414312](https://github.com/douglasabnovato/dashboards/actions/runs/43799414312) da `main`), e as Etapas 3 a 7 esperam a decisão do responsável na #10.
+
+## 0. Portal estático no GitHub Pages (no ar)
+
+| Item | Valor | Conferido |
+|---|---|---|
+| Endereço | https://douglasabnovato.github.io/dashboards/ | `curl -s -o /dev/null -w "%{http_code}"`, 16/11/2026: 200 |
+| Modo | Legado: publica a branch `main`, pasta `/` (raiz), sem workflow | `gh api repos/douglasabnovato/dashboards/pages`, 16/11/2026: `build_type: legacy`, `status: built` |
+| O que vai ao ar | `index.html`, `assets/`, `dashboard/` e `kanban/`. Os arquivos Java ficam no repositório, mas o Pages só serve arquivos estáticos | — |
+| Quando atualiza | A cada merge na `main` (que exige PR e os jobs `build` e `portal` verdes) | — |
+
+Para conferir depois de um merge na `main`:
+1. Abrir **Actions** e esperar o workflow `pages build and deployment` ficar verde.
+2. Rodar `curl -s https://douglasabnovato.github.io/dashboards/ | grep -o "<title>[^<]*"` e comparar com o `<title>` do `index.html` da `main`.
+
+Não há workflow próprio de Pages: o modo legado já publica a `main` sem passo manual. Trocar para "GitHub Actions" em **Settings → Pages** é configuração do responsável e não é necessário hoje.
 
 ## 1. Desafio
 
@@ -54,9 +69,9 @@ Nenhum código Java foi alterado.
 
 Branch: **main**.
 
-### Etapa 1 · Validar localmente (BLOQUEANTE)
+### Etapa 1 · Validar localmente (concluída pelo CI)
 
-Situação: nenhum ambiente conseguiu rodar o `mvn verify` completo.
+Situação em 16/11/2026: o job `build` do CI roda `mvn -B verify` (core, api e web) e passa, com `Skipped: 0` (run [43799414312](https://github.com/douglasabnovato/dashboards/actions/runs/43799414312)). O registro abaixo, de 27/09/2026, fica como histórico. Para rodar na sua máquina, siga os passos.
 
 Log resumido da última tentativa (27/09/2026, sandbox com JDK 21.0.10 e Maven 3.9.11):
 
@@ -81,14 +96,9 @@ Faça no Git Bash:
    - `DASHBOARDS_API_KEY=teste-local KANBAN_SENHA=senha-local mvn -pl web -am spring-boot:run` → abrir `http://localhost:8080`, as 5 telas, login no Kanban, mover 2 cartões para Doing (o 2º deve ser recusado).
 7. Opcional, para testar a memória como no Render (se tiver Docker Desktop): `docker build -f api/Dockerfile -t dash-api .` e `docker run --rm -m 512m -e DASHBOARDS_API_KEY=x -p 8081:8081 dash-api`; `docker stats` deve ficar abaixo de ~450 MB.
 
-### Etapa 2 · Subir para o GitHub (sem apagar os HTML ainda)
+### Etapa 2 · Subir para o GitHub (concluída)
 
-1. Ativar o CI: `mkdir -p .github/workflows && mv ci/github-actions-ci.yml .github/workflows/ci.yml && rmdir ci`
-2. `git status` (não podem aparecer `target/`, `data/` nem `.env`)
-3. `git add -A`
-4. `git commit -m "feat: versão Java (core, api, web) com deploy no Render + Neon"`
-5. `git push origin main`
-6. No GitHub, aba **Actions**: o CI (`mvn -B verify`) precisa ficar verde.
+O código Java e o CI (`.github/workflows/ci.yml`, jobs `build` e `portal`) já estão na `main`. A `main` é protegida: toda mudança entra por PR, com o CI verde.
 
 ### Etapa 3 · Criar o banco no Neon
 
@@ -124,7 +134,7 @@ Faça no Git Bash:
 
 1. Conferir de novo o item 3 da Etapa 5.
 2. `git rm index.html dashboard/2-analytics_dashboard_v1-14-08-2026.html dashboard/3-analytics_dashboard_v2-14-08-2026.html kanban/1-weekly_dashboard-31-07-2026.html`
-3. `git commit -m "chore: remove a versão HTML substituída pela versão Java"` e `git push origin main`
+3. `git commit -m "chore: remove a versão HTML substituída pela versão Java"` numa branch e abrir PR para a `main` (o push direto é bloqueado pelo ruleset)
 4. Se o GitHub Pages estava ativo: **Settings → Pages → Unpublish site** (o repositório passa a ter só código Java).
 
 ### Etapa 7 · Fechar
