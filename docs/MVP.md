@@ -1,12 +1,12 @@
 # MVP — learnTECH OS — Growth Hub
 
-> Fonte única do estado. Tabela atual no topo; as anteriores estão em "Histórico", no fim.
+> Fonte única do estado. Tabela atual no topo; as anteriores estão em "Histórico", no fim. Revisto em 16/11/2026, às 12h22: critério 9 com os alertas do Dependabot ligados.
 
 **Nível:** Estudo (N1). Os critérios 5 e 7 são "Não se aplica (N1)" e saem da conta.
 
-**Resumo:** 9 de 10 aplicáveis atendidos.
+**Resumo:** 10 de 10 aplicáveis atendidos.
 
-**Finalizado:** sim. O único critério fora de "Atende" é o 9, que depende do responsável ligar os alertas do Dependabot (#23, com `depende-do-responsavel`). Falta também o merge da sprint na `main` (PR `developer/sprint-2026-11-19` → `main`, com `revisao-responsavel`), que é do responsável. A publicação da versão Java segue como decisão dele (#10), fora do MVP.
+**Finalizado:** sim. Todos os critérios aplicáveis atendem; o 9 passou a "Atende" em 16/11/2026, depois que o responsável ligou os alertas do Dependabot (#23). Falta também o merge da sprint na `main` (PR `developer/sprint-2026-11-19` → `main`, com `revisao-responsavel`), que é do responsável. A publicação da versão Java segue como decisão dele (#10), fora do MVP.
 
 ## Critérios em 16/11/2026 (ciclo de 16/11/2026)
 
@@ -22,7 +22,7 @@ A versão Java (API e web) é estudo local até o responsável decidir a #10; os
 | 6 | Falhas tratadas | Atende | `npx playwright test portal`, 16/11/2026: passa "dashboard que não abre mostra o erro e deixa tentar de novo" (404 simulado, alerta, foco em "Tentar de novo" e nova tentativa), em `tests/portal.spec.mjs`; no CI, passa no run [43809970018](https://github.com/douglasabnovato/dashboards/actions/runs/43809970018) do PR #27, 16/11/2026: `13 passed`. Uma falha local, com a máquina carregada, está na #26. O visualizador mostra "Carregando o dashboard…" enquanto abre | #26 |
 | 7 | Desempenho aceitável | Não se aplica (N1) | LCP do portal de 1,09 s em 02/11/2026, só como registro | — |
 | 8 | Acessibilidade básica | Atende | `npx playwright test acessibilidade`, 16/11/2026: 7 testes passam. axe sem violações no portal em 1280 px e em 375 px (início, visualizador e erro); axe sem nenhuma violação, inclusive moderada, nos 3 dashboards (#16); todo controle alcançado por Tab tem nome e foco visível; no visualizador, Tab entra no dashboard e Shift+Tab volta à barra. Prova de que o teste pega o defeito: com os 2 dashboards da sprint (sem a correção do #16), `npx playwright test acessibilidade -g "sem violação do axe, nem moderada"`, 16/11/2026: 2 falham, com `heading-order`, `landmark-one-main` e `region` | #16 |
-| 9 | Segurança e conformidade | Parcial | `npm audit --omit=dev`, 16/11/2026: 0 vulnerabilidades. `gh api "repos/douglasabnovato/dashboards/dependabot/alerts?state=open&per_page=100"`, 16/11/2026: 403, alertas desligados; sem eles, o critério fica "Parcial" (regra em decisão na engenharia#33). Sem segredo no código: senhas e chaves só por variável (`.env.example` só com nomes). Portal estático, sem dado pessoal; os dados da migração `V2__dados_originais.sql` são métricas e tarefas, sem nome nem e-mail. Números dos dashboards marcados como ilustrativos (decisão D4), com teste | #23 |
+| 9 | Segurança e conformidade | Atende | `gh api "repos/douglasabnovato/dashboards/dependabot/alerts?state=open&per_page=100"`, 16/11/2026 11h59: 0 alertas abertos (alertas ligados pelo responsável nesse dia; o grafo de dependências lê também os `pom.xml`: 16 pacotes Maven no SBOM). `npm audit --omit=dev` depois do `npm ci`, 16/11/2026 12h22: 0 vulnerabilidades. Sem segredo no código: senhas e chaves só por variável (`.env.example` só com nomes). Portal estático, sem dado pessoal; os dados da migração `V2__dados_originais.sql` são métricas e tarefas, sem nome nem e-mail. Números dos dashboards marcados como ilustrativos (decisão D4), com teste | #23 |
 | 10 | Entrega confiável | Atende | `gh api repos/douglasabnovato/dashboards/rules/branches/main`, 16/11/2026: `deletion`, `non_fast_forward`, `pull_request` e `required_status_checks`; o ruleset `principal-protegida` exige os jobs `build` e `portal` | — |
 | 11 | Testes dos fluxos críticos | Atende | Run [43799414312](https://github.com/douglasabnovato/dashboards/actions/runs/43799414312) da `main`, 16/11/2026: job `build` com `mvn -B verify` (core, api e web, `Skipped: 0`) e job `portal` com `12 passed`, sem `skipped`; job `portal` no run [43809970018](https://github.com/douglasabnovato/dashboards/actions/runs/43809970018) do PR #27, 16/11/2026: `13 passed`, sem `skipped` | — |
 | 12 | Documentação honesta | Atende | README e `docs/DEPLOY.md` conferidos em 16/11/2026: dizem que só o portal está no ar (Pages no modo legado, `main` e pasta `/`) e que o CI já roda o `mvn -B verify`; uma tabela só, resumo batendo com ela | — |
@@ -51,6 +51,8 @@ Lista de cada parada do Tab conferida por `tests/acessibilidade.spec.mjs`: todas
 Integração direta com Meta Ads e CRM, publicação da versão Java até o responsável decidir e um tema escuro para o portal.
 
 ## Histórico
+
+- 16/11/2026, 12h22: critério 9 de "Parcial" para "Atende". Antes, a API de alertas do Dependabot respondia 403 (alertas desligados, engenharia#33). Com os alertas ligados, 0 abertos e audit de produção 0. Resumo de 9 para 10 de 10.
 
 ### Tabela de 10/11/2026 (ciclo da faixa de 90%), substituída em 16/11/2026
 

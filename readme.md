@@ -8,7 +8,7 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 
 ## Estado e próximos passos (ciclo de 16/11/2026)
 
-**Estado:** Estudo (N1), 9 de 10 critérios aplicáveis atendidos; **Finalizado: sim**. O critério 9 fica "Parcial" até o responsável ligar os alertas do Dependabot (#23). A `main` exige PR e os jobs `build` e `portal` do CI verdes (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
+**Estado:** Estudo (N1), 10 de 10 critérios aplicáveis atendidos; **Finalizado: sim**. O critério 9 atende desde 16/11/2026: com os alertas do Dependabot ligados (#23), há 0 alertas abertos e o `npm audit --omit=dev` dá 0. A `main` exige PR e os jobs `build` e `portal` do CI verdes (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
 
 **No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 16/11/2026. A versão Java não está publicada; é estudo local até a decisão da #10.
 
@@ -21,7 +21,7 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 **Ciclos anteriores:** números ilustrativos e ruleset da `main` (PR #22, 10/11/2026); axe e teclado no CI (PR #18, 07/11/2026); carregando e erro no visualizador (03/11/2026). Todos já estão na `main`.
 
 **Próximos passos**
-- #23 Ligar os alertas do Dependabot (responsável).
+- #23 Ligar os alertas do Dependabot (ligados pelo responsável em 16/11/2026, com 0 alertas abertos; a issue fica para ele fechar).
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
 - #17 Tirar o Tailwind Play CDN dos dashboards antigos.
