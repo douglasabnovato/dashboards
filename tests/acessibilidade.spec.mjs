@@ -1,4 +1,5 @@
-/* Acessibilidade: axe no portal (claro e escuro) e nos 3 dashboards, e uso só com teclado (issues #12 e #13) */
+/* Acessibilidade: axe no portal (desktop e celular) e nos 3 dashboards, e uso só com teclado (issues #12, #13 e #16) */
+/* O portal não tem tema escuro próprio (nenhum prefers-color-scheme no CSS): testar "escuro" repetiria a tela clara */
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -38,9 +39,20 @@ async function percorrerComTab(page, limite = 80) {
   return paradas;
 }
 
-for (const esquema of ['light', 'dark']) {
-  test(`portal sem violações do axe no modo ${esquema}, no início, no visualizador e no erro`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: esquema });
+const LARGURAS = [
+  { nome: 'desktop', width: 1280, height: 800 },
+  { nome: 'celular', width: 375, height: 812 },
+];
+
+test('o CSS do portal não tem tema escuro próprio, então o axe roda em larguras, não em esquemas de cor', async ({ request }) => {
+  const css = await (await request.get('/assets/portal.css')).text();
+  const html = await (await request.get('/')).text();
+  expect(css + html).not.toContain('prefers-color-scheme');
+});
+
+for (const { nome, width, height } of LARGURAS) {
+  test(`portal sem violações do axe em ${nome} (${width} px), no início, no visualizador e no erro`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
     await page.goto('/');
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
@@ -56,25 +68,26 @@ for (const esquema of ['light', 'dark']) {
 }
 
 for (const { url, controles } of DASHBOARDS) {
-  test(`${url}: sem violação séria ou crítica do axe e controles alcançados por Tab com foco visível`, async ({ page }) => {
+  test(`${url}: sem violação do axe, nem moderada, e controles alcançados por Tab com foco visível`, async ({ page }) => {
     await page.goto(url);
     await page.waitForLoadState('networkidle');
-    const graves = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => ['serious', 'critical'].includes(v.impact));
-    expect(graves.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+    /* #16: barra todas as violações, inclusive as moderadas (heading-order, landmark-one-main e region) */
+    const violacoes = (await new AxeBuilder({ page }).analyze()).violations;
+    expect(violacoes.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
 
     /* No Analytics v2 o simulador começa oculto: roda o axe de novo com ele aberto */
     if (url.includes('3-analytics')) {
       await page.locator('#btn-mode-sim').click();
-      const gravesSim = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => ['serious', 'critical'].includes(v.impact));
-      expect(gravesSim.map((v) => v.id)).toEqual([]);
+      const violacoesSim = (await new AxeBuilder({ page }).analyze()).violations;
+      expect(violacoesSim.map((v) => v.id)).toEqual([]);
     }
     /* No Kanban, troca o filtro para conferir o contraste dos filtros inativos e o aria-pressed */
     if (url.includes('kanban')) {
       await page.getByRole('button', { name: /A - MedTrem/ }).click();
       await expect(page.getByRole('button', { name: /A - MedTrem/ })).toHaveAttribute('aria-pressed', 'true');
       await expect(page.getByRole('button', { name: 'All Projects' })).toHaveAttribute('aria-pressed', 'false');
-      const gravesFiltro = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => ['serious', 'critical'].includes(v.impact));
-      expect(gravesFiltro.map((v) => v.id)).toEqual([]);
+      const violacoesFiltro = (await new AxeBuilder({ page }).analyze()).violations;
+      expect(violacoesFiltro.map((v) => v.id)).toEqual([]);
       await page.getByRole('button', { name: 'All Projects' }).click();
     }
     await page.locator('body').click({ position: { x: 1, y: 1 } });

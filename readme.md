@@ -1,33 +1,39 @@
-> **Projeto de estudo.** Estado conferido em 30/10/2026: Detalhes em [docs/AVALIACAO.md](docs/AVALIACAO.md) e próximos passos em [docs/PLANO-ESTRATEGICO.md](docs/PLANO-ESTRATEGICO.md).
+> **Projeto de estudo (N1).** Estado atual em [docs/MVP.md](docs/MVP.md); avaliação antiga (30/10/2026) em [docs/AVALIACAO.md](docs/AVALIACAO.md).
 
 # learnTECH OS — Growth Hub (Java)
 
 Sistema de gestão tática, análise de performance e simulador de tráfego pago do ecossistema **learnTECH**, com foco na BU **ByteClass**. Esta versão 2.0 reescreve a suíte HTML original em **Java**: API em Spring Boot e interface em JSF/PrimeFaces, usando os mesmos dados, fórmulas, presets e regras.
 
-> **Estado em 02/11/2026:** O GitHub Pages publica só o portal estático (`index.html`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`. Critérios em [docs/MVP.md](docs/MVP.md).
+> **Estado em 16/11/2026:** O GitHub Pages publica só o portal estático (`index.html`), no modo legado (branch `main`, pasta `/`). A versão Java não está publicada: os endereços do Render abaixo são os esperados, se a publicação for feita. Portal: `npm ci`, `npm run css`, `npx playwright install chromium` e `npm test`, com Node 22.12 ou mais novo (porta 4173; outra porta com `PORTA_PORTAL=4791 npm test` no Bash ou `$env:PORTA_PORTAL=4791; npm test` no PowerShell). Critérios em [docs/MVP.md](docs/MVP.md).
 
-## Estado e próximos passos (ciclo da faixa de 90%, 10/11/2026)
+## Estado e próximos passos (ciclo de 16/11/2026)
 
-**Estado:** Estudo (N1), 10 de 10 critérios aplicáveis atendidos; **Finalizado: sim**. A `main` exige PR e os jobs `build` e `portal` do CI verdes (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
+**Estado:** Estudo (N1), 9 de 10 critérios aplicáveis atendidos; **Finalizado: sim**. O critério 9 fica "Parcial" até o responsável ligar os alertas do Dependabot (#23). A `main` exige PR e os jobs `build` e `portal` do CI verdes (ruleset `principal-protegida`). Detalhes em [`docs/MVP.md`](docs/MVP.md).
 
-**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 10/11/2026. A versão Java não está publicada; é estudo local até a decisão da #10.
+**No ar:** o portal em https://douglasabnovato.github.io/dashboards/ respondeu 200 em 16/11/2026. A versão Java não está publicada; é estudo local até a decisão da #10.
 
-**O que foi feito neste ciclo** (PR #22 para a `developer/sprint-2026-11-12`; a `main` espera a revisão do responsável)
-- Números dos dashboards marcados como ilustrativos no portal, no visualizador e nos dashboards de Analytics, com teste.
-- Critérios 2, 3, 9 e 10 revistos pelas decisões D1 a D4 do ciclo.
+**O que foi feito neste ciclo** (PR feature → `developer/sprint-2026-11-19`; a `main` espera a revisão do responsável)
+- Analytics v1 com região `main` e títulos em ordem nos 3 dashboards; o axe passou a barrar também as violações moderadas (#16).
+- O teste do portal "em claro e escuro" repetia a mesma tela, porque o portal não tem tema escuro; agora roda em 1280 px e 375 px.
+- `@axe-core/playwright` 4.14.0 e `@playwright/test` 1.65.1; porta do portal por `PORTA_PORTAL`.
+- Critério 9 corrigido para "Parcial" (Dependabot desligado); `docs/DEPLOY.md` com o estado real.
 
-**Ciclos anteriores:** axe e teclado no CI (07/11/2026); carregando e erro no visualizador (03/11/2026).
+**Ciclos anteriores:** números ilustrativos e ruleset da `main` (PR #22, 10/11/2026); axe e teclado no CI (PR #18, 07/11/2026); carregando e erro no visualizador (03/11/2026). Todos já estão na `main`.
 
 **Próximos passos**
-- #19 Mesclar a sprint na `main` (responsável).
+- #23 Ligar os alertas do Dependabot (responsável).
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
-- #16 Zerar as violações moderadas do axe nos dashboards antigos.
 - #17 Tirar o Tailwind Play CDN dos dashboards antigos.
+- #24 Receber atualizações semanais de dependências e actions.
+- #25 Gerar o CSS do portal com o Tailwind 4.
+- #26 Estabilizar o teste do erro com "Tentar de novo".
 
 **Onde está a documentação**
 - Estado dos critérios: [`docs/MVP.md`](docs/MVP.md)
-- Plano do ciclo: [`docs/PLANO-DE-ACAO.md`](docs/PLANO-DE-ACAO.md)
+- Plano do ciclo, com as fontes da pesquisa: [`docs/PLANO-DE-ACAO.md`](docs/PLANO-DE-ACAO.md)
+- Hospedagem (Pages e Render): [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- Arquitetura: [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md)
 
 ## Em produção
 
@@ -123,8 +129,10 @@ dashboards/
 ├── core/   domínio (metricas, simulador, kanban) + testes
 ├── api/    Spring Boot REST + Flyway (V1 estrutura, V2 dados originais) + testes
 ├── web/    JoinFaces/PrimeFaces (META-INF/resources/*.xhtml) + testes
-├── docs/   ANALISE, ARQUITETURA, PLANO-DE-ACAO
-├── ci/     workflow do GitHub Actions (mover para .github/workflows/)
+├── docs/   MVP, PLANO-DE-ACAO, DEPLOY, ARQUITETURA, ANALISE
+├── index.html, dashboard/, kanban/   portal estático (GitHub Pages) e dashboards HTML
+├── tests/  testes Playwright do portal, com axe
+├── .github/workflows/ci.yml   CI: jobs build (mvn -B verify) e portal (Playwright)
 ├── render.yaml, .env.example
 └── pom.xml
 ```
