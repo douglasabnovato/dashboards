@@ -52,3 +52,15 @@ test('o último dashboard escolhido vence, mesmo com a lista em outra ordem', as
   const esperado = (await botoes.first().getAttribute('onclick')).match(/'([^']+)'/)[1];
   await expect(page.locator('#hub-iframe')).toHaveAttribute('src', esperado);
 });
+
+test('os números aparecem como ilustrativos no portal e nos dashboards (decisão D4)', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#aviso-ilustrativo')).toHaveText(/ilustrativos/);
+  await expect(page.locator('#view-home')).not.toContainText(/auditados|indicadores reais/);
+  await page.locator('button[onclick*="2-analytics_dashboard_v1"]').click();
+  await expect(page.locator('#view-viewer')).toContainText('Números ilustrativos');
+  for (const arquivo of ['dashboard/2-analytics_dashboard_v1-14-08-2026.html', 'dashboard/3-analytics_dashboard_v2-14-08-2026.html']) {
+    await page.goto('/' + arquivo, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('[data-aviso="ilustrativo"]')).toHaveText(/ilustrativos/);
+  }
+});
