@@ -71,6 +71,8 @@
       </div>
     </header>
 
+    <main id="conteudo" class="space-y-6">
+
     <!-- BANNER DE MODO SIMULAÇÃO -->
     <div id="sim-banner" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-xl flex items-center justify-between text-sm flex-wrap gap-2">
       <div class="flex items-center gap-2">
@@ -198,14 +200,14 @@
     <!-- ÁREA DE GRÁFICOS -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="card-glass p-6 rounded-2xl">
-        <h3 class="text-base font-bold text-white mb-4">Investimento Mensal (R$) vs Volume de Leads</h3>
+        <h2 class="text-base font-bold text-white mb-4">Investimento Mensal (R$) vs Volume de Leads</h2>
         <div class="h-64">
           <canvas id="chartInvestLeads"></canvas>
         </div>
       </div>
 
       <div class="card-glass p-6 rounded-2xl">
-        <h3 class="text-base font-bold text-white mb-4">Evolução de Eficiência: CPC vs Custo/Conversa</h3>
+        <h2 class="text-base font-bold text-white mb-4">Evolução de Eficiência: CPC vs Custo/Conversa</h2>
         <div class="h-64">
           <canvas id="chartEfic"></canvas>
         </div>
@@ -215,7 +217,7 @@
     <!-- TABELA DADOS HISTÓRICOS FIEIS AO PDF -->
     <section class="card-glass p-6 rounded-2xl overflow-x-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-base font-bold text-white">Tabela Consolidada (Dados Históricos Originais)</h3>
+        <h2 class="text-base font-bold text-white">Tabela Consolidada (Dados Históricos Originais)</h2>
         <span class="text-xs text-slate-400">Fonte: Windsor.ai / Meta Ads</span>
       </div>
       <table class="w-full text-left text-sm text-slate-300">
@@ -235,6 +237,8 @@
       </table>
     </section>
 
+    </main>
+
     <!-- PAINEL EXPLICATIVO DO ESPECIALISTA (BASE DO DASHBOARD) -->
     <footer class="card-glass p-6 rounded-2xl border-indigo-500/40 bg-indigo-950/30 accent-glow">
       <div class="flex items-start gap-4">
@@ -242,7 +246,7 @@
           💡
         </div>
         <div class="space-y-1.5">
-          <h4 class="text-base font-bold text-indigo-300">Análise Tática do Especialista em Tráfego</h4>
+          <h2 class="text-base font-bold text-indigo-300">Análise Tática do Especialista em Tráfego</h2>
           <p id="expert-note" class="text-sm text-slate-300 leading-relaxed">
             Selecione uma fase ou ative o modo simulador para visualizar orientações dinâmicas sobre a gestão de tráfego pago da ByteClass.
           </p>
