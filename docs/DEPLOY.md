@@ -19,6 +19,14 @@ Para conferir depois de um merge na `main`:
 
 Não há workflow próprio de Pages: o modo legado já publica a `main` sem passo manual. Trocar para "GitHub Actions" em **Settings → Pages** é configuração do responsável e não é necessário hoje.
 
+### Atualizações de dependências (Dependabot)
+
+O `.github/dependabot.yml` pede, toda semana, um PR agrupado para o npm do portal, outro para o Maven (core, api e web) e outro para as actions do CI. Versão maior do npm e do Maven fica de fora: é migração, com issue própria (como a #25). Versão maior das actions vem num PR à parte.
+
+- Os PRs vão para a `main` e rodam os jobs `build` e `portal` do CI.
+- **Quem mescla é o responsável**, com o CI verde (regra do fluxo Git do portfólio: o merge de PR do Dependabot pelo agente é negado).
+- Para conferir: `gh pr list -R douglasabnovato/dashboards --author "app/dependabot"`.
+
 ## 1. Desafio
 
 Colocar no ar, sem custo, dois serviços Java 21 (API e Web) e um banco PostgreSQL, cabendo nos **512 MB de RAM** do Render free, protegendo o Kanban (dados internos) e só apagando os HTML antigos (`index.html`, `dashboard/`, `kanban/`) quando a versão nova estiver respondendo.
