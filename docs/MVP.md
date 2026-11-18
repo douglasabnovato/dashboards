@@ -1,12 +1,12 @@
 # MVP — learnTECH OS — Growth Hub
 
-> Fonte única do estado. Tabela atual no topo; as anteriores estão em "Histórico", no fim. Revisto em 16/11/2026, às 12h22: critério 9 com os alertas do Dependabot ligados.
+> Fonte única do estado. Tabela atual no topo; as anteriores estão em "Histórico", no fim. Revisto em 18/11/2026: teste do erro sem depender do CDN (#26) e fila de issues pela regra de 18/11/2026.
 
 **Nível:** Estudo (N1). Os critérios 5 e 7 são "Não se aplica (N1)" e saem da conta.
 
 **Resumo:** 10 de 10 aplicáveis atendidos.
 
-**Finalizado:** sim. Todos os critérios aplicáveis atendem; o 9 passou a "Atende" em 16/11/2026, depois que o responsável ligou os alertas do Dependabot (#23). Falta também o merge da sprint na `main` (PR `developer/sprint-2026-11-19` → `main`, com `revisao-responsavel`), que é do responsável. A publicação da versão Java segue como decisão dele (#10), fora do MVP.
+**Finalizado:** sim. Todos os critérios aplicáveis atendem; o 9 passou a "Atende" em 16/11/2026, depois que o responsável ligou os alertas do Dependabot (#23). O ciclo de 16/11/2026 já está na `main` (PRs #28 e #31). A publicação da versão Java segue como decisão dele (#10), fora do MVP.
 
 ## Critérios em 16/11/2026 (ciclo de 16/11/2026)
 
@@ -19,7 +19,7 @@ A versão Java (API e web) é estudo local até o responsável decidir a #10; os
 | 3 | Fluxo principal completo | Atende | `PORTA_PORTAL=4791 npx playwright test`, 16/11/2026: 13 testes passam no Chromium (abrir o portal, escolher um dashboard, usar o visualizador, trocar pelo seletor, erro e "Tentar de novo", voltar). Os mesmos testes rodam no job `portal` do CI: run [43799414312](https://github.com/douglasabnovato/dashboards/actions/runs/43799414312) da `main`, 16/11/2026, `12 passed`; e run [43809970018](https://github.com/douglasabnovato/dashboards/actions/runs/43809970018) do PR #27, 16/11/2026: `13 passed`. `curl -s -o /dev/null -w "%{http_code}"` em https://douglasabnovato.github.io/dashboards/, 16/11/2026: 200 | — |
 | 4 | Escopo enxuto | Atende | "Fora do MVP" abaixo | — |
 | 5 | Medição de uso | Não se aplica (N1) | Projeto de estudo | — |
-| 6 | Falhas tratadas | Atende | `npx playwright test portal`, 16/11/2026: passa "dashboard que não abre mostra o erro e deixa tentar de novo" (404 simulado, alerta, foco em "Tentar de novo" e nova tentativa), em `tests/portal.spec.mjs`; no CI, passa no run [43809970018](https://github.com/douglasabnovato/dashboards/actions/runs/43809970018) do PR #27, 16/11/2026: `13 passed`. Uma falha local, com a máquina carregada, está na #26. O visualizador mostra "Carregando o dashboard…" enquanto abre | #26 |
+| 6 | Falhas tratadas | Atende | `npx playwright test portal`, 16/11/2026: passa "dashboard que não abre mostra o erro e deixa tentar de novo" (404 simulado, alerta, foco em "Tentar de novo" e nova tentativa), em `tests/portal.spec.mjs`; no CI, passa no run [43809970018](https://github.com/douglasabnovato/dashboards/actions/runs/43809970018) do PR #27, 16/11/2026: `13 passed`. Desde 18/11/2026 o teste corta a rede externa dos dashboards (Tailwind e Chart.js por CDN, #17): `PORTA_PORTAL=4160 npx playwright test portal -g "não abre" --repeat-each=20`, 18/11/2026: 20 de 20; com o CDN atrasado 6 s, a versão anterior falhava no "carregando" (#26). O visualizador mostra "Carregando o dashboard…" enquanto abre | #26 |
 | 7 | Desempenho aceitável | Não se aplica (N1) | LCP do portal de 1,09 s em 02/11/2026, só como registro | — |
 | 8 | Acessibilidade básica | Atende | `npx playwright test acessibilidade`, 16/11/2026: 7 testes passam. axe sem violações no portal em 1280 px e em 375 px (início, visualizador e erro); axe sem nenhuma violação, inclusive moderada, nos 3 dashboards (#16); todo controle alcançado por Tab tem nome e foco visível; no visualizador, Tab entra no dashboard e Shift+Tab volta à barra. Prova de que o teste pega o defeito: com os 2 dashboards da sprint (sem a correção do #16), `npx playwright test acessibilidade -g "sem violação do axe, nem moderada"`, 16/11/2026: 2 falham, com `heading-order`, `landmark-one-main` e `region` | #16 |
 | 9 | Segurança e conformidade | Atende | `gh api "repos/douglasabnovato/dashboards/dependabot/alerts?state=open&per_page=100"`, 16/11/2026 11h59: 0 alertas abertos (alertas ligados pelo responsável nesse dia; o grafo de dependências lê também os `pom.xml`: 16 pacotes Maven no SBOM). `npm audit --omit=dev` depois do `npm ci`, 16/11/2026 12h22: 0 vulnerabilidades. Sem segredo no código: senhas e chaves só por variável (`.env.example` só com nomes). Portal estático, sem dado pessoal; os dados da migração `V2__dados_originais.sql` são métricas e tarefas, sem nome nem e-mail. Números dos dashboards marcados como ilustrativos (decisão D4), com teste | #23 |
@@ -43,8 +43,9 @@ Lista de cada parada do Tab conferida por `tests/acessibilidade.spec.mjs`: todas
 
 ## Próximas tarefas
 
-- Ligar os alertas do Dependabot (responsável, #23); decidir publicar no Render e no Neon ou manter como estudo (responsável, #10).
-- Padronizar as fórmulas de ROAS, CPA e CAC (#11); tirar o Tailwind Play CDN dos dashboards (#17); atualizações semanais de dependências (#24); Tailwind 4 no portal (#25); teste do erro estável (#26).
+- Decidir publicar no Render e no Neon ou manter como estudo (responsável, #10).
+- Próximos passos (rótulo `proximo-passo`): padronizar as fórmulas de ROAS, CPA e CAC (#11); tirar o Tailwind Play CDN dos dashboards (#17); teste do erro estável (#26, na sprint).
+- Atualizações semanais de dependências (#24, na sprint). O Tailwind 4 no portal (#25) ficou fora: troca de versão maior sem ganho para um critério do N1.
 
 ## Fora do MVP
 
