@@ -21,7 +21,7 @@ Não há workflow próprio de Pages: o modo legado já publica a `main` sem pass
 
 ### Atualizações de dependências (Dependabot)
 
-O `.github/dependabot.yml` pede, toda semana, um PR agrupado para o npm do portal, outro para o Maven (core, api e web) e outro para as actions do CI. Versão maior do npm e do Maven fica de fora: é migração, com issue própria. Versão maior das actions vem num PR à parte.
+O `.github/dependabot.yml` pede, toda semana, um PR agrupado para o npm do portal, outro para o Maven (core, api e web) e outro para as actions do CI. Versão maior do npm e do Maven fica de fora: é migração, com issue própria (vale para as atualizações de versão; um alerta de segurança que só se corrige numa versão maior ainda pode abrir PR avulso). Versão maior das actions vem num PR à parte.
 
 - Os PRs vão para a `main` e rodam os jobs `build` e `portal` do CI.
 - **Quem mescla é o responsável**, com o CI verde (regra do fluxo Git do portfólio: o merge de PR do Dependabot pelo agente é negado).

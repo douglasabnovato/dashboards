@@ -26,6 +26,7 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 - #17 Tirar o Tailwind Play CDN dos dashboards antigos.
 - #26 Estabilizar o teste do erro com "Tentar de novo" (na sprint desde 18/11/2026).
 - #24 Receber atualizações semanais de dependências e actions (`.github/dependabot.yml` na sprint desde 18/11/2026).
+- O Tailwind 4 no portal (#25) ficou fora: versão maior sem ganho para um critério do N1.
 
 **Onde está a documentação**
 - Estado dos critérios: [`docs/MVP.md`](docs/MVP.md)

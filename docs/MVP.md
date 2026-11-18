@@ -44,7 +44,7 @@ Lista de cada parada do Tab conferida por `tests/acessibilidade.spec.mjs`: todas
 ## Próximas tarefas
 
 - Decidir publicar no Render e no Neon ou manter como estudo (responsável, #10).
-- Próximos passos (rótulo `proximo-passo`): padronizar as fórmulas de ROAS, CPA e CAC (#11); tirar o Tailwind Play CDN dos dashboards (#17); teste do erro estável (#26, na sprint).
+- Próximos passos, as 3 issues com o rótulo `proximo-passo`: padronizar as fórmulas de ROAS, CPA e CAC (#11); tirar o Tailwind Play CDN dos dashboards (#17); teste do erro estável (#26, já na sprint, com o rótulo até o merge na `main`).
 - Atualizações semanais de dependências (#24, na sprint). O Tailwind 4 no portal (#25) ficou fora: troca de versão maior sem ganho para um critério do N1.
 
 ## Fora do MVP
