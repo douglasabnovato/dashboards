@@ -21,13 +21,12 @@ Sistema de gestão tática, análise de performance e simulador de tráfego pago
 **Ciclos anteriores:** números ilustrativos e ruleset da `main` (PR #22, 10/11/2026); axe e teclado no CI (PR #18, 07/11/2026); carregando e erro no visualizador (03/11/2026). Todos já estão na `main`.
 
 **Próximos passos**
-- #23 Ligar os alertas do Dependabot (ligados pelo responsável em 16/11/2026, com 0 alertas abertos; a issue fica para ele fechar).
 - #10 Decidir a publicação da versão Java no Render (responsável).
 - #11 Padronizar as fórmulas de ROAS, CPA e CAC.
 - #17 Tirar o Tailwind Play CDN dos dashboards antigos.
-- #24 Receber atualizações semanais de dependências e actions.
-- #25 Gerar o CSS do portal com o Tailwind 4.
-- #26 Estabilizar o teste do erro com "Tentar de novo".
+- #26 Estabilizar o teste do erro com "Tentar de novo" (na sprint desde 18/11/2026).
+- #24 Receber atualizações semanais de dependências e actions (`.github/dependabot.yml` na sprint desde 18/11/2026).
+- O Tailwind 4 no portal (#25) ficou fora: versão maior sem ganho para um critério do N1.
 
 **Onde está a documentação**
 - Estado dos critérios: [`docs/MVP.md`](docs/MVP.md)

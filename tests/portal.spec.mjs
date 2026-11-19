@@ -25,7 +25,20 @@ test('em 375 px não há rolagem horizontal', async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
 });
 
+/* Os dashboards pedem Tailwind e Chart.js por CDN (#17). Neste teste o que importa é o
+   portal: a rede externa responde vazio na hora, e o "carregando" some sem depender dela (#26). */
+async function cortarRedeExterna(page) {
+  await page.route(
+    (url) => url.hostname !== '127.0.0.1',
+    (rota) => {
+      const tipo = rota.request().resourceType() === 'stylesheet' ? 'text/css' : 'application/javascript';
+      return rota.fulfill({ status: 200, contentType: tipo, body: '' });
+    },
+  );
+}
+
 test('dashboard que não abre mostra o erro e deixa tentar de novo', async ({ page }) => {
+  await cortarRedeExterna(page);
   await page.route('**/dashboard/2-analytics_dashboard_v1-14-08-2026.html', (rota) =>
     rota.fulfill({ status: 404, body: 'não encontrado' }),
   );
